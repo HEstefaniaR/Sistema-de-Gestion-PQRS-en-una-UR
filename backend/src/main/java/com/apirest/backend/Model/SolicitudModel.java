@@ -54,5 +54,10 @@ public class SolicitudModel {
     @JoinColumn(name = "idusuario")
     private UsuarioModel usuario;
 
+    public void setRutaOficioPdf(String rutaOficio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRutaOficioPdf'");
+    }
+
 }
 

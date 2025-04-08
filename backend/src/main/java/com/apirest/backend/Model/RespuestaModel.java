@@ -27,8 +27,7 @@ public class RespuestaModel {
     @Column(name = "fecha_respuesta", nullable = false)
     private LocalDateTime fechaRespuesta = LocalDateTime.now();
 
-    @Column
-    private Integer puntuacion; 
+    private Integer puntuacion;
 
     @ManyToOne
     @JoinColumn(name = "idsolicitud", nullable = false)
@@ -41,4 +40,8 @@ public class RespuestaModel {
     @ManyToOne
     @JoinColumn(name = "respuestaid")
     private RespuestaModel respuestaPadre;
+    
+    @ManyToOne
+    @JoinColumn(name = "idusuario")
+    private UsuarioModel usuario;
 }
