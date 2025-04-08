@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "18e974ac-e971-4eea-aae6-523d2833aed4",
+		"name": "Respuestas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "43254787",
+		"_collection_link": "https://almacenamientodatos.postman.co/workspace/AlmacenamientoDatos-Workspace~5ff46127-026c-44b9-90f8-0e2953c42391/collection/43254787-18e974ac-e971-4eea-aae6-523d2833aed4?action=share&source=collection_link&creator=43254787"
+	},
+	"item": [
+		{
+			"name": "Responder solicitud",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "comentario\n",
+							"value": "\"Buenas tardes, ya hemos revisado su caso.",
+							"type": "text"
+						},
+						{
+							"key": "archivo\n",
+							"type": "file",
+							"src": "postman-cloud:///1f0141fa-1c52-4940-9fe6-56a53d13849c"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/responder/1?usuario=admin1&contrasena=admin123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"responder",
+						"1"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "admin1"
+						},
+						{
+							"key": "contrasena",
+							"value": "admin123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener respuesta por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/UR/respuestas/27"
+			},
+			"response": []
+		},
+		{
+			"name": "respuestas por solicitud",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/UR/respuestas/por-solicitud/1"
+			},
+			"response": []
+		},
+		{
+			"name": "calificar respuesta",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/calificar/26?usuario=jlopez&contrasena=pass123&puntuacion=4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"calificar",
+						"26"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "jlopez"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						},
+						{
+							"key": "puntuacion",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reabrir solicitud",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/reabrir/12?usuario=admin1&contrasena=pass123&comentario=no estoy de acuerdo&idRespuestaPadre=26",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"reabrir",
+						"12"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "admin1"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						},
+						{
+							"key": "comentario",
+							"value": "no estoy de acuerdo"
+						},
+						{
+							"key": "idRespuestaPadre",
+							"value": "26"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Responder a replica",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/responder-replica/12?usuario=admin1&contrasena=admin123&comentario= esta bien &idRespuestaPadre=29",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"responder-replica",
+						"12"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "admin1"
+						},
+						{
+							"key": "contrasena",
+							"value": "admin123"
+						},
+						{
+							"key": "comentario",
+							"value": " esta bien "
+						},
+						{
+							"key": "idRespuestaPadre",
+							"value": "29"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cerrar solicitud definitivamente",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/cerrar-definitivo/12?usuario=admin1&contrasena=admin123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"cerrar-definitivo",
+						"12"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "admin1"
+						},
+						{
+							"key": "contrasena",
+							"value": "admin123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "actualizar respuesta",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"comentario\": \"Comentario editado.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/respuestas/actualizar/25?usuario=jlopez&contrasena=pass123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"respuestas",
+						"actualizar",
+						"25"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "jlopez"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar respuestas",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/UR/respuestas/26"
+			},
+			"response": []
+		}
+	]
+}
