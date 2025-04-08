@@ -13,7 +13,6 @@ El repositorio contiene las siguientes carpetas y archivos principales:
 - Pruebas Postman: Carpeta que incluye las colecciones de pruebas realizadas con Postman para verificar el correcto funcionamiento de la API REST desarrollada.
 - backend: Directorio principal del código fuente del backend de la aplicación, desarrollado en Java utilizando el framework Spring Boot.
 - uploads: Carpeta destinada al almacenamiento de archivos subidos a la aplicación, como evidencias asociadas a las solicitudes.
-- Entrega 1 Correcciones.pdf: Documento que contiene las correcciones realizadas después de la primera entrega del proyecto.
 - consultas.sql: Archivo SQL que contiene las consultas implementadas para interactuar con la base de datos del sistema.
 - data.sql: Script SQL utilizado para llenar la base de datos con datos iniciales necesarios para el funcionamiento del sistema.
 - script.sql: Archivo que incluye la estructura de la base de datos, así como los objetos almacenados en ella como triggers y procedimientos.
