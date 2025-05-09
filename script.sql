@@ -78,8 +78,23 @@ CREATE TABLE `evidencia` (
 -- OBJETOS ALMACENADOS
 USE `SistemaGestionUR`;
 
--- Trigger: impedir modificar solicitudes cerradas
+-- Evento: cerrar solicitud tras 15 segundos
+CREATE EVENT cerrarSolicitudesSinReplica
+ON SCHEDULE EVERY 15 SECOND
+DO
+  UPDATE solicitud s
+  SET s.estado = 'cerrada',
+      s.fecha_actualizacion = NOW()
+  WHERE s.estado = 'resuelta'
+    AND NOT EXISTS (
+      SELECT 1
+      FROM respuesta r
+      JOIN usuario u ON u.idusuario = r.idusuario
+      WHERE r.idsolicitud = s.idsolicitud
+        AND u.rol IN ('propietario', 'inquilino')
+    );
 
+-- Trigger: impedir modificar solicitudes cerradas
 DELIMITER //
 
 CREATE TRIGGER evitarCambiosSiCerrada
@@ -96,7 +111,6 @@ END;
 DELIMITER ;
 
 -- Trigger: Validar que los usuarios anónimos no tengan datos personales
-
 DELIMITER $$
 
 CREATE TRIGGER validarUsuarioAnonimo
@@ -116,7 +130,7 @@ END$$
 -- Trigger: garantizar que la puntuacion sea entre 1 y 5
 DELIMITER $$
 
-CREATE TRIGGER validar_puntuacion_respuesta
+CREATE TRIGGER validarPuntuacionRespuesta
 BEFORE INSERT ON respuesta
 FOR EACH ROW
 BEGIN
@@ -128,7 +142,7 @@ END$$
 
 DELIMITER ;
 
--- Trigger pasar a resuelta cuando un admin responde
+-- Trigger: pasar a resuelta cuando un admin responde
 DELIMITER $$
 
 CREATE TRIGGER marcarComoResueltaPorAdmin
@@ -145,24 +159,7 @@ END$$
 
 DELIMITER ;
 
--- Evento: cerrar solicitud tras 15 segundos
-CREATE EVENT cerrarSolicitudesSinReplica
-ON SCHEDULE EVERY 15 SECOND
-DO
-  UPDATE solicitud s
-  SET s.estado = 'cerrada',
-      s.fecha_actualizacion = NOW()
-  WHERE s.estado = 'resuelta'
-    AND NOT EXISTS (
-      SELECT 1
-      FROM respuesta r
-      JOIN usuario u ON u.idusuario = r.idusuario
-      WHERE r.idsolicitud = s.idsolicitud
-        AND u.rol IN ('propietario', 'inquilino')
-    );
-
--- Trigger validad que no son anonimos par replicar
-
+-- Trigger: validad que no son anonimos par replicar
 DELIMITER $$
 
 CREATE TRIGGER validarReplicaPorRol
@@ -171,7 +168,6 @@ FOR EACH ROW
 BEGIN
   DECLARE user_rol VARCHAR(20);
 
-  -- Solo si es una respuesta con idusuario (replica)
   IF NEW.idusuario IS NOT NULL THEN
     SELECT rol INTO user_rol
     FROM usuario
@@ -186,21 +182,224 @@ END$$
 
 DELIMITER ;
 
--- Procedimiento: Reabrir solicitud 
+-- Trigger: Validar calificacion de respuestas de admin
+DELIMITER $$
+
+CREATE TRIGGER validarCalificacionRespuesta
+BEFORE UPDATE ON respuesta
+FOR EACH ROW
+BEGIN
+  DECLARE rol_usuario VARCHAR(20);
+
+  IF NEW.idusuario IS NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Solo los usuarios registrados pueden calificar respuestas.';
+  END IF;
+
+  SELECT rol INTO rol_usuario FROM usuario WHERE idusuario = NEW.idusuario;
+
+  IF rol_usuario = 'anonimo' THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Los usuarios anónimos no pueden calificar respuestas.';
+  END IF;
+
+  IF OLD.puntuacion IS NOT NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La respuesta ya ha sido calificada.';
+  END IF;
+
+  IF OLD.idusuario IS NOT NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se pueden calificar respuestas hechas por usuarios.';
+  END IF;
+
+END$$
+
+DELIMITER ;
+
+-- Trigger: Eliminar solicitudes solo si esta en "radicada"
+DELIMITER $$
+
+CREATE TRIGGER validarEliminacionSolicitud
+BEFORE DELETE ON solicitud
+FOR EACH ROW
+BEGIN
+  IF OLD.estado != 'radicada' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Solo se pueden eliminar solicitudes en estado radicada.';
+  END IF;
+END$$
+
+DELIMITER ;
+
+-- TRigger: validar la respuesta inicial
+DELIMITER $$
+
+CREATE TRIGGER validarRespuestaInicial
+BEFORE INSERT ON respuesta
+FOR EACH ROW
+BEGIN
+  DECLARE estado_actual VARCHAR(20);
+  DECLARE solicitante INT;
+  DECLARE rol_usuario VARCHAR(20);
+
+  IF NEW.respuestaid IS NULL THEN
+    -- Obtener estado y solicitante
+    SELECT estado, idusuario INTO estado_actual, solicitante
+    FROM solicitud
+    WHERE idsolicitud = NEW.idsolicitud;
+
+    -- Verificar estado cerrado
+    IF estado_actual = 'cerrada' THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se puede responder a una solicitud cerrada.';
+    END IF;
+
+    -- Debe haber un único autor
+    IF (NEW.idusuario IS NOT NULL AND NEW.idadmin IS NOT NULL) OR
+       (NEW.idusuario IS NULL AND NEW.idadmin IS NULL) THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'La respuesta debe tener un único creador: usuario o administrador.';
+    END IF;
+
+    -- Si es usuario, validar que sea el creador y no sea anónimo
+    IF NEW.idusuario IS NOT NULL THEN
+      SELECT rol INTO rol_usuario FROM usuario WHERE idusuario = NEW.idusuario;
+
+      IF rol_usuario = 'anonimo' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Los usuarios anónimos no pueden responder.';
+      END IF;
+
+      IF NEW.idusuario != solicitante THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Solo el creador de la solicitud puede responder.';
+      END IF;
+
+    END IF;
+  END IF;
+END$$
+DELIMITER ;
+
+-- Trigger: Validar réplica de respuesta
+DELIMITER $$
+
+CREATE TRIGGER validarReplicaUnica
+BEFORE INSERT ON respuesta
+FOR EACH ROW
+BEGIN
+  DECLARE r_usuario INT;
+  DECLARE r_admin INT;
+
+  IF NEW.respuestaid IS NOT NULL THEN
+    SELECT idusuario, idadmin INTO r_usuario, r_admin
+    FROM respuesta
+    WHERE idrespuesta = NEW.respuestaid;
+
+    -- No responderse a sí mismo
+    IF (NEW.idusuario IS NOT NULL AND NEW.idusuario = r_usuario) OR
+       (NEW.idadmin IS NOT NULL AND NEW.idadmin = r_admin) THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se puede responder a una respuesta propia.';
+    END IF;
+
+    -- Solo una réplica por parte
+    IF NEW.idusuario IS NOT NULL THEN
+      IF EXISTS (
+        SELECT 1 FROM respuesta
+        WHERE respuestaid = NEW.respuestaid AND idusuario = NEW.idusuario
+      ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario ya respondió a esta respuesta.';
+      END IF;
+    ELSE
+      IF EXISTS (
+        SELECT 1 FROM respuesta
+        WHERE respuestaid = NEW.respuestaid AND idadmin = NEW.idadmin
+      ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El administrador ya respondió a esta respuesta.';
+      END IF;
+    END IF;
+  END IF;
+END$$
+
+DELIMITER ;
+
+-- Validar respuesta a replica (admmin)
+DELIMITER $$
+CREATE TRIGGER validarSegundaReplicaFinal
+BEFORE INSERT ON respuesta
+FOR EACH ROW
+BEGIN
+  DECLARE anterior_usuario INT;
+  DECLARE anterior_admin INT;
+
+  IF NEW.respuestaid IS NOT NULL THEN
+    SELECT idusuario, idadmin INTO anterior_usuario, anterior_admin
+    FROM respuesta
+    WHERE idrespuesta = NEW.respuestaid;
+
+    IF NEW.idusuario IS NOT NULL THEN
+      IF anterior_usuario IS NOT NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede responder a una respuesta propia (usuario).';
+      END IF;
+    ELSE
+      IF anterior_admin IS NOT NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede responder a una respuesta propia (admin).';
+      END IF;
+    END IF;
+
+    IF EXISTS (
+      SELECT 1 FROM respuesta
+      WHERE respuestaid = NEW.respuestaid AND (
+        (NEW.idusuario IS NOT NULL AND idusuario IS NOT NULL) OR
+        (NEW.idadmin IS NOT NULL AND idadmin IS NOT NULL)
+      )
+    ) THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Solo se permite una réplica por cada parte.';
+    END IF;
+  END IF;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento: Pasar a reabierta 
 DELIMITER $$
 
 CREATE PROCEDURE reabrirSolicitud(
   IN p_idsolicitud INT,
+  IN p_idusuario INT,
   IN p_comentario TEXT
 )
 BEGIN
+  DECLARE rol_usuario VARCHAR(20);
+  DECLARE estado_actual VARCHAR(20);
+
+  SELECT rol INTO rol_usuario
+  FROM usuario
+  WHERE idusuario = p_idusuario;
+
+  IF rol_usuario = 'anonimo' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Los usuarios anónimos no pueden reabrir solicitudes.';
+  END IF;
+
+  SELECT estado INTO estado_actual
+  FROM solicitud
+  WHERE idsolicitud = p_idsolicitud;
+
+  IF estado_actual != 'resuelta' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Solo se pueden reabrir solicitudes en estado resuelta.';
+  END IF;
+
   UPDATE solicitud
   SET estado = 'reabierta',
       fecha_actualizacion = NOW()
   WHERE idsolicitud = p_idsolicitud;
 
-  INSERT INTO respuesta (comentario, idsolicitud, idadmin)
-  VALUES (p_comentario, p_idsolicitud, NULL);
+  INSERT INTO respuesta (comentario, idsolicitud, idusuario)
+  VALUES (p_comentario, p_idsolicitud, p_idusuario);
 END$$
 
 DELIMITER ;
