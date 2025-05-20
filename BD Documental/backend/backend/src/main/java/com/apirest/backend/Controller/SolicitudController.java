@@ -25,20 +25,17 @@ public class SolicitudController {
     @Autowired
     private ISolicitudesRepository solicitudesRepository;
 
-    // Crear nueva solicitud
     @PostMapping("/insertar")
     public ResponseEntity<SolicitudesModel> guardarSolicitud(@RequestBody SolicitudesModel solicitud) {
         solicitud.setFechaHoraCreacion(LocalDateTime.now());
         return new ResponseEntity<>(solicitudesService.guardarSolicitud(solicitud), HttpStatus.CREATED);
     }
 
-    // Listar todas las solicitudes
     @GetMapping("/listar")
     public ResponseEntity<List<SolicitudesModel>> listarSolicitudes() {
         return new ResponseEntity<>(solicitudesService.listarSolicitudes(), HttpStatus.OK);
     }
 
-    // Buscar solicitud por ID
     @GetMapping("/buscarporid/{id}")
     public ResponseEntity<SolicitudesModel> buscarSolicitudPorId(@PathVariable Integer id) {
         SolicitudesModel solicitud = solicitudesService.buscarSolicitudPorId(id);
@@ -48,7 +45,6 @@ public class SolicitudController {
         return new ResponseEntity<>(solicitud, HttpStatus.OK);
     }
 
-    // Actualizar solicitud (solo ciertos campos si estado es 'radicada')
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> actualizarSolicitud(@PathVariable Integer id, @RequestBody SolicitudesModel nuevaSolicitud) {
         Optional<SolicitudesModel> optionalSolicitud = solicitudesRepository.findById(id);
@@ -70,8 +66,6 @@ public class SolicitudController {
         solicitudesRepository.save(solicitudExistente);
         return new ResponseEntity<>(solicitudExistente, HttpStatus.OK);
     }
-
-    // Eliminar solicitud (solo si está en estado 'radicada')
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarSolicitudPorId(@PathVariable Integer id) {
         SolicitudesModel solicitud = solicitudesService.buscarSolicitudPorId(id);
@@ -87,7 +81,6 @@ public class SolicitudController {
         return ResponseEntity.noContent().build();
     }
 
-    // Cambiar estado de la solicitud
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> actualizarEstadoSolicitud(
             @PathVariable Integer id,
