@@ -31,23 +31,6 @@ public class AdminServiceImp implements IAdminService {
         return adminOptional.orElse(null);
     }
 
-
-    @Override
-    public void eliminarAdminPorId(Integer id) {
-        adminRepository.deleteById(id);
-    }
-
-    @Override
-    public AdminModel actualizarAdminPorId(Integer id, AdminModel adminActualizado) {
-        AdminModel adminExistente = adminRepository.findById(id).orElse(null);
-        if (adminExistente != null) {
-            adminExistente.setUsuario(adminActualizado.getUsuario());
-            adminExistente.setContrasena(adminActualizado.getContrasena());
-            return adminRepository.save(adminExistente);
-        }
-        return null;
-    }
-
     @Override
     public AdminModel buscarPorUsuario(String usuario) {
         return adminRepository.findByUsuario(usuario);

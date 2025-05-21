@@ -24,7 +24,7 @@ public interface ISolicitudesRepository extends MongoRepository<SolicitudesModel
     })
     SolicitudesModel findSolicitudConEvidencias(Integer id);
 
-    void eliminarSolicitudPorId(Integer id);
+    void deleteById(Integer id);
 
     List<SolicitudesModel> findByEstadoAndFechaActualizacionBefore(String estado, Date fecha);
 }
