@@ -94,16 +94,15 @@ public class SolicitudesService implements ISolicitudesService {
         solicitudesRepository.save(solicitud);
     }
     private TipoArchivo determinarTipoArchivo(String contentType) {
-        if (contentType == null) return TipoArchivo.OTRO;
-        
+        if (contentType == null) return TipoArchivo.documento;
+
         return switch (contentType.toLowerCase()) {
-            case "image/jpeg", "image/png", "image/gif" -> TipoArchivo.IMAGEN;
-            case "application/pdf" -> TipoArchivo.PDF;
-            case "application/msword", 
-                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> TipoArchivo.DOCUMENTO;
-            case "video/mp4", "video/quicktime" -> TipoArchivo.VIDEO;
-            case "audio/mpeg", "audio/wav" -> TipoArchivo.AUDIO;
-            default -> TipoArchivo.OTRO;
+            case "image/jpeg", "image/png", "image/gif" -> TipoArchivo.imagen;
+            case "video/mp4", "video/quicktime" -> TipoArchivo.video;
+            case "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> TipoArchivo.documento;
+            default -> TipoArchivo.documento;
         };
     }
 }

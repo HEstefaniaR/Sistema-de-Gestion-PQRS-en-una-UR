@@ -127,7 +127,6 @@ public class SolicitudController {
         try {
             String nombreArchivo = almacenamientoService.almacenarArchivo(archivo);  
 
-            // Crear nueva evidencia embebida
             SolicitudesModel.EvidenciaEmbed evidencia = new SolicitudesModel.EvidenciaEmbed();
             evidencia.setIdEvidencia(new ObjectId());
             evidencia.setFechaHoraCarga(LocalDateTime.now());
