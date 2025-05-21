@@ -1,0 +1,344 @@
+[{
+  "_id": 1,
+  "solicitudId": 1,
+  "comentario": "Se ha notificado a la empresa encargada para ajustar los horarios de recolección.",
+  "puntuacion": 2,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 2,
+  "solicitudId": 2,
+  "comentario": "La banca adicional será instalada la próxima semana.",
+  "puntuacion": 3,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 3,
+  "solicitudId": 3,
+  "comentario": "Estamos coordinando con la policía local para mejorar la vigilancia.",
+  "puntuacion": 2,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 4,
+  "solicitudId": 4,
+  "comentario": "La propuesta ha sido enviada al comité de convivencia.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 5,
+  "solicitudId": 5,
+  "comentario": "Un técnico revisará el sistema hidráulico mañana.",
+  "puntuacion": 1,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 6,
+  "solicitudId": 6,
+  "comentario": "Se está evaluando la instalación de cámaras en el parqueadero.",
+  "puntuacion": 3,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 7,
+  "solicitudId": 7,
+  "comentario": "El área de mantenimiento revisará los juegos esta semana.",
+  "puntuacion": 2,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 8,
+  "solicitudId": 8,
+  "comentario": "El tema será incluido en la próxima reunión de copropietarios.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 9,
+  "solicitudId": 9,
+  "comentario": "Se asignó un técnico para revisar el sistema eléctrico hoy.",
+  "puntuacion": 5,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 10,
+  "solicitudId": 10,
+  "comentario": "Se hablará con el vigilante nocturno y se tomarán medidas.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 11,
+  "solicitudId": 12,
+  "comentario": "Estamos verificando el cierre del gimnasio con el área correspondiente.",
+  "puntuacion": 2,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 12,
+  "solicitudId": 22,
+  "comentario": "Se enviará un técnico a revisar el ascensor esta semana.",
+  "puntuacion": 2,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 13,
+  "solicitudId": 23,
+  "comentario": "El problema del techo será evaluado en el próximo mes.",
+  "puntuacion": 1,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 14,
+  "solicitudId": 12,
+  "comentario": "Se hará seguimiento semanal al área común reportada.",
+  "puntuacion": 3,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 15,
+  "solicitudId": 1,
+  "respuestaPadre": 1,
+  "comentario": "Han pasado varios días y la basura sigue acumulada. ¿Cuándo lo resolverán?",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 1
+  }
+},
+{
+  "_id": 16,
+  "solicitudId": 2,
+  "respuestaPadre": 2,
+  "comentario": "La banca aún no ha sido instalada. ¿Hubo algún inconveniente?",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 2
+  }
+},
+{
+  "_id": 17,
+  "solicitudId": 3,
+  "respuestaPadre": 3,
+  "comentario": "Hoy volvieron a verse personas sospechosas. ¿Se pueden tomar medidas urgentes?",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 3
+  }
+},
+{
+  "_id": 18,
+  "solicitudId": 5,
+  "respuestaPadre": 5,
+  "comentario": "La presión del agua sigue muy baja. El técnico no vino.",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 5
+  }
+},
+{
+  "_id": 19,
+  "solicitudId": 7,
+  "respuestaPadre": 7,
+  "comentario": "Los juegos siguen igual. Nadie ha venido a revisarlos.",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 7
+  }
+},
+{
+  "_id": 20,
+  "solicitudId": 12,
+  "respuestaPadre": 11,
+  "comentario": "El gimnasio sigue cerrado. No se ha informado nada nuevo.",
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "usuario",
+    "autorId": 12
+  }
+},
+{
+  "_id": 21,
+  "solicitudId": 1,
+  "respuestaPadre": 15,
+  "comentario": "Hemos cambiado de proveedor. El nuevo operador iniciará mañana.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 22,
+  "solicitudId": 2,
+  "respuestaPadre": 16,
+  "comentario": "Tuvimos retraso por lluvias. La banca será instalada esta semana.",
+  "puntuacion": 3,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+},
+{
+  "_id": 23,
+  "solicitudId": 3,
+  "respuestaPadre": 17,
+  "comentario": "Se reforzará la vigilancia con rondas cada hora en la noche.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 24,
+  "solicitudId": 5,
+  "respuestaPadre": 18,
+  "comentario": "El técnico tuvo una emergencia. Irá sin falta mañana a primera hora.",
+  "puntuacion": 5,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 25,
+  "solicitudId": 7,
+  "respuestaPadre": 19,
+  "comentario": "Ya se asignó al personal de mantenimiento para esta tarde.",
+  "puntuacion": 5,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 1
+  }
+},
+{
+  "_id": 26,
+  "solicitudId": 12,
+  "respuestaPadre": 20,
+  "comentario": "Se publicará un comunicado hoy con los horarios de reapertura.",
+  "puntuacion": 4,
+  "fechaRespuesta": {
+    "$date": "2025-05-21T15:34:36.526Z"
+  },
+  "autor": {
+    "tipo": "admin",
+    "autorId": 2
+  }
+}]

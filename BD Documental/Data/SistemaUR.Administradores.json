@@ -1,0 +1,10 @@
+[{
+  "_id": 1,
+  "usuario": "admin1",
+  "contrasena": "admin123"
+},
+{
+  "_id": 2,
+  "usuario": "admin2",
+  "contrasena": "secure456"
+}]

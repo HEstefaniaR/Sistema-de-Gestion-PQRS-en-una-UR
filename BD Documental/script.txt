@@ -1,0 +1,332 @@
+use SistemaUR;
+
+db.createCollection("Administradores", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Administradores",
+            "properties": {
+                "_id": {
+                    "bsonType": "int"
+                },
+                "usuario": {
+                    "bsonType": "string"
+                },
+                "contraseña": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "_id",
+                "usuario",
+                "contrasena"
+            ]
+        }
+    },
+    "validationLevel": "moderate",
+    "validationAction": "error"
+});
+
+db.createCollection("Respuestas", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Respuestas",
+            "properties": {
+                "_id": {
+                    "bsonType": "int"
+                },
+                "solicitudId": {
+                    "bsonType": "int"
+                },
+                "comentario": {
+                    "bsonType": "string"
+                },
+                "rutaArchivoPDF": {
+                    "bsonType": "string"
+                },
+                "fechaRespuesta": {
+                    "bsonType": "date"
+                },
+                "puntuacion": {
+                    "bsonType": "int",
+                    "maximum": 5,
+                    "minimum": 1
+                },
+                "respuestaPadre": {
+                    "bsonType": "int"
+                },
+                "autor": {
+                    "bsonType": "object",
+                    "properties": {
+                        "tipo": {
+                            "bsonType": "string",
+                            "enum": [
+                                "admin",
+                                "usuario"
+                            ]
+                        },
+                        "autorId": {
+                            "bsonType": "int"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "tipo",
+                        "autorId"
+                    ]
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "_id",
+                "solicitudId",
+                "comentario",
+                "fechaRespuesta",
+                "autor"
+            ]
+        }
+    },
+    "validationLevel": "moderate",
+    "validationAction": "error"
+});
+
+db.createCollection("Solicitudes", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Solicitudes",
+            "properties": {
+                "_id": {
+                    "bsonType": "int"
+                },
+                "tipo": {
+                    "bsonType": "string",
+                    "enum": [
+                        "Peticion",
+                        "Queja",
+                        "Reclamo",
+                        "Sugerencia"
+                    ]
+                },
+                "categoria": {
+                    "bsonType": "string",
+                    "enum": [
+                        "ServiciosGenerales",
+                        "Seguridad",
+                        "AreasComunes"
+                    ]
+                },
+                "descripcion": {
+                    "bsonType": "string"
+                },
+                "estado": {
+                    "bsonType": "string",
+                    "enum": [
+                        "Radicada",
+                        "EnProceso",
+                        "Resuelta",
+                        "Cerrada",
+                        "Reabierta"
+                    ]
+                },
+                "fechaHoraCreacion": {
+                    "bsonType": "date"
+                },
+                "fechaActualizacion": {
+                    "bsonType": "date"
+                },
+                "usuarioId": {
+                    "bsonType": "int"
+                },
+                "Respuestas": {
+                    "bsonType": "array",
+                    "additionalItems": true,
+                    "items": {
+                        "bsonType": "object",
+                        "properties": {
+                            "respuestaId": {
+                                "bsonType": "int"
+                            },
+                            "comentario": {
+                                "bsonType": "string"
+                            },
+                            "fechaRespuesta": {
+                                "bsonType": "date"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "respuestaId",
+                            "comentario",
+                            "fechaRespuesta"
+                        ]
+                    }
+                },
+                "evidencias": {
+                    "bsonType": "array",
+                    "additionalItems": true,
+                    "items": {
+                        "bsonType": "object",
+                        "properties": {
+                            "evidenciaId": {
+                                "bsonType": "objectId"
+                            },
+                            "tipoArchivo": {
+                                "bsonType": "string",
+                                "enum": [
+                                    "imagen",
+                                    "video",
+                                    "documento"
+                                ]
+                            },
+                            "rutaArchivo": {
+                                "bsonType": "string"
+                            },
+                            "descripcion": {
+                                "bsonType": "string"
+                            },
+                            "fechaRegistro": {
+                                "bsonType": "date"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "evidenciaId",
+                            "tipoArchivo",
+                            "rutaArchivo",
+                            "descripcion",
+                            "fechaRegistro"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "_id",
+                "tipo",
+                "categoria",
+                "descripcion",
+                "estado",
+                "fechaHoraCreacion",
+                "usuarioId"
+            ]
+        }
+    },
+    "validationLevel": "moderate",
+    "validationAction": "error"
+});
+
+db.createCollection("Usuarios", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Usuarios",
+            "properties": {
+                "_id": {
+                    "bsonType": "int"
+                },
+                "usuario": {
+                    "bsonType": "string"
+                },
+                "contrasena": {
+                    "bsonType": "string"
+                },
+                "nombreCompleto": {
+                    "bsonType": "string"
+                },
+                "tipoDocumento": {
+                    "bsonType": "string",
+                    "enum": [
+                        "cc",
+                        "ce",
+                        "ti",
+                        "pasaporte"
+                    ]
+                },
+                "numeroDocumento": {
+                    "bsonType": "string"
+                },
+                "correo": {
+                    "bsonType": "string"
+                },
+                "telefono": {
+                    "bsonType": "string"
+                },
+                "direccion": {
+                    "bsonType": "object",
+                    "properties": {
+                        "tipo": {
+                            "bsonType": "string",
+                            "enum": [
+                                "casa",
+                                "apartamento"
+                            ]
+                        },
+                        "numero": {
+                            "bsonType": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "tipo",
+                        "numero"
+                    ]
+                },
+                "rol": {
+                    "bsonType": "string",
+                    "enum": [
+                        "propietario",
+                        "inquilino",
+                        "anonimo"
+                    ]
+                },
+                "solicitudes": {
+                    "bsonType": "array",
+                    "additionalItems": true,
+                    "items": {
+                        "bsonType": "object",
+                        "properties": {
+                            "SolicitudId": {
+                                "bsonType": "int"
+                            },
+                            "fechaCreacion": {
+                                "bsonType": "date"
+                            },
+                            "estado": {
+                                "bsonType": "string",
+                                "enum": [
+                                    "Radicada",
+                                    "EnProceso",
+                                    "Resuelta",
+                                    "Cerrada",
+                                    "Reabierta"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "SolicitudId",
+                            "fechaCreacion",
+                            "estado"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "_id",
+                "usuario",
+                "nombreCompleto",
+                "rol"
+            ]
+        }
+    },
+    "validationLevel": "moderate",
+    "validationAction": "error"
+});
