@@ -2,7 +2,6 @@ package com.apirest.backend.Controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,18 +28,21 @@ public class RespuestaController {
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<RespuestaModel> buscarRespuestaPorId(@PathVariable ObjectId id) {
+    public ResponseEntity<RespuestaModel> buscarRespuestaPorId(@PathVariable Integer id) {
         return new ResponseEntity<>(respuestaService.buscarRespuestaPorId(id), HttpStatus.OK);
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<RespuestaModel> actualizarRespuesta(@PathVariable ObjectId id, @RequestBody RespuestaModel respuesta) {
-        return new ResponseEntity<>(respuestaService.actualizarRespuesta(id, respuesta), HttpStatus.OK);
+    public ResponseEntity<String> actualizarRespuesta(@PathVariable Integer id, @RequestBody RespuestaModel respuesta) {
+        RespuestaModel actualizada = respuestaService.actualizarRespuesta(id, respuesta);
+        if (actualizada == null) {
+            return new ResponseEntity<>("No se pudo actualizar la respuesta", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("Respuesta actualizada correctamente", HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminarRespuesta(@PathVariable ObjectId id) {
-        respuestaService.eliminarRespuesta(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> eliminarRespuesta(@PathVariable Integer id) {
+        return ResponseEntity.ok(respuestaService.eliminarRespuesta(id));
     }
 }

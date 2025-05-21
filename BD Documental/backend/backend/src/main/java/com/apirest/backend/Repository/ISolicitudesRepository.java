@@ -1,4 +1,5 @@
 package com.apirest.backend.Repository;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -14,15 +15,16 @@ public interface ISolicitudesRepository extends MongoRepository<SolicitudesModel
     })
     List<SolicitudesDTO> findByUsuarioId(int usuarioId);
     @Aggregation(pipeline = {
-        "{ $match: { _id: ?0 } }", // Filtra por ID de solicitud
-        "{ $lookup: { from: 'Evidencias', localField: '_id', foreignField: 'idSolicitud', as: 'evidencias' } }", // Relación con evidencias
-        "{ $project: { " +
+        "{ $match: { _id: ?0 } }", 
+        "{ $lookup: { from: 'Evidencias', localField: '_id', foreignField: 'idSolicitud', as: 'evidencias' } }", 
             "id: 1, tipo: 1, categoria: 1, descripcion: 1, " +
             "estado: 1, fechaHoraCreacion: 1, " +
-            "evidencias: { id: 1, tipoArchivo: 1, rutaArchivo: 1, fechaHoraCarga: 1 } " + // Campos específicos de evidencias
+            "evidencias: { id: 1, tipoArchivo: 1, rutaArchivo: 1, fechaHoraCarga: 1 } " + 
         "} }"
     })
     SolicitudesModel findSolicitudConEvidencias(Integer id);
 
     void eliminarSolicitudPorId(Integer id);
+
+    List<SolicitudesModel> findByEstadoAndFechaActualizacionBefore(String estado, Date fecha);
 }

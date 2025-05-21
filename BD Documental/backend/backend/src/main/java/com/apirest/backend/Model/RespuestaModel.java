@@ -2,11 +2,8 @@ package com.apirest.backend.Model;
 
 import java.util.Date;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +16,7 @@ import lombok.AllArgsConstructor;
 public class RespuestaModel {
 
     @Id
-    private ObjectId id;
+    private Integer id;
 
     private Integer solicitudId;
     private String comentario;
@@ -28,11 +25,6 @@ public class RespuestaModel {
     private Integer puntuacion;
     private Integer respuestaPadre;
     private Autor autor;
-
-    @JsonProperty("id")
-    public String getIdString() {
-        return id != null ? id.toHexString() : null;
-    }
 
     @Data
     @NoArgsConstructor

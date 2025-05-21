@@ -2,7 +2,6 @@ package com.apirest.backend.Controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,13 @@ public class UsuarioController {
     private IUsuarioService usuarioService;
 
     @PostMapping("/insertar")
-    public ResponseEntity<String> crearUsuario(@RequestBody UsuarioModel usuario) {
-        return new ResponseEntity<>(usuarioService.guardarUsuario(usuario), HttpStatus.CREATED);
+    public ResponseEntity<?> crearUsuario(@RequestBody UsuarioModel usuario) {
+        try {
+            UsuarioModel creado = usuarioService.guardarUsuario(usuario);
+            return new ResponseEntity<>(creado, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al crear usuario: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/listar")
@@ -28,19 +32,4 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.listarUsuarios(), HttpStatus.OK);
     }
 
-    @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<UsuarioModel> buscarUsuarioPorId(@PathVariable ObjectId id) {
-        return new ResponseEntity<>(usuarioService.buscarUsuarioPorId(id), HttpStatus.OK);
-    }
-
-    @PutMapping("/actualizar/{id}")
-    public ResponseEntity<UsuarioModel> actualizarUsuario(@PathVariable ObjectId id, @RequestBody UsuarioModel usuario) {
-        return new ResponseEntity<>(usuarioService.actualizarUsuario(id, usuario), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable ObjectId id) {
-        usuarioService.eliminarUsuario(id);
-        return ResponseEntity.noContent().build();
-    }
 }

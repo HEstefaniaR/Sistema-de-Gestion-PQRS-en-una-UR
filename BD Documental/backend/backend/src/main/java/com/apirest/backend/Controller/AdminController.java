@@ -28,17 +28,17 @@ public class AdminController {
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<AdminModel> buscarPorId(@PathVariable String id) {
+    public ResponseEntity<AdminModel> buscarPorId(@PathVariable Integer id) {
         return new ResponseEntity<>(adminService.buscarAdminPorId(id), HttpStatus.OK);
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<AdminModel> actualizarAdmin(@PathVariable String id, @RequestBody AdminModel admin) {
+    public ResponseEntity<AdminModel> actualizarAdmin(@PathVariable Integer id, @RequestBody AdminModel admin) {
         return new ResponseEntity<>(adminService.actualizarAdminPorId(id, admin), HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminarAdmin(@PathVariable String id) {
+    public ResponseEntity<Void> eliminarAdmin(@PathVariable Integer id) {
         adminService.eliminarAdminPorId(id);
         return ResponseEntity.noContent().build();
     }

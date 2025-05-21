@@ -2,10 +2,10 @@ package com.apirest.backend.Service;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.apirest.backend.Model.RolUsuario;
 import com.apirest.backend.Model.UsuarioModel;
 import com.apirest.backend.Repository.IUsuarioRepository;
 
@@ -16,9 +16,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
     private IUsuarioRepository usuarioRepository;
 
     @Override
-    public String guardarUsuario(UsuarioModel usuario) {
-        usuarioRepository.save(usuario);
-        return "Usuario guardado correctamente.";
+    public UsuarioModel guardarUsuario(UsuarioModel usuario) {
+        if (usuario.getRol() == RolUsuario.anonimo) {
+            usuario.setNombreCompleto("Anónimo");
+            usuario.setTipoDocumento(null);
+            usuario.setNumeroDocumento(null);  
+            usuario.setCorreo(null);      
+            usuario.setTelefono(null);        
+            usuario.setDireccion(null);      
+        }
+        return usuarioRepository.save(usuario);
     }
 
     @Override
@@ -27,18 +34,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    public UsuarioModel buscarUsuarioPorId(ObjectId id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public UsuarioModel actualizarUsuario(ObjectId id, UsuarioModel usuario) {
-        usuario.setId(id);
-        return usuarioRepository.save(usuario);
-    }
-
-    @Override
-    public void eliminarUsuario(ObjectId id) {
-        usuarioRepository.deleteById(id);
+    public UsuarioModel buscarPorUsuario(String usuario) {
+        return usuarioRepository.findByUsuario(usuario);
     }
 }

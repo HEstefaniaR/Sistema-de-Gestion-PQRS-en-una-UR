@@ -5,6 +5,7 @@ import java.util.List;
 import com.apirest.backend.Model.UsuarioModel;
 
 public interface IUsuarioService {
-    public String guardarUsuario(UsuarioModel usuario);
-    public List<UsuarioModel> listarUsuarios();
+    UsuarioModel guardarUsuario(UsuarioModel usuario);
+    List<UsuarioModel> listarUsuarios();
+    UsuarioModel buscarPorUsuario(String usuario);
 }

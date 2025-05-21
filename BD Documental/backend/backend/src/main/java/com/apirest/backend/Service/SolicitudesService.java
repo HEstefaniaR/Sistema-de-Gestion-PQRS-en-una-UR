@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +67,7 @@ public class SolicitudesService implements ISolicitudesService {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed nuevaEvidencia = new EvidenciaEmbed();
-        nuevaEvidencia.setIdEvidencia(java.util.UUID.randomUUID().toString());
+        nuevaEvidencia.setIdEvidencia(new ObjectId()); 
         nuevaEvidencia.setTipoArchivo(determinarTipoArchivo(archivo.getContentType()));
         nuevaEvidencia.setRutaArchivo(almacenamientoService.almacenarArchivo(archivo));
         nuevaEvidencia.setFechaHoraCarga(LocalDateTime.now());
@@ -83,7 +85,7 @@ public class SolicitudesService implements ISolicitudesService {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed evidencia = solicitud.getEvidencias().stream()
-            .filter(e -> e.getIdEvidencia().equals(idEvidencia))
+            .filter(e -> e.getIdEvidencia().equals(new ObjectId(idEvidencia)))
             .findFirst()
             .orElseThrow(() -> new RecursoNoEncontradoException("Evidencia no encontrada"));
             

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Document ("Administradores")
 public class AdminModel {
     @Id
-    private String id; 
+    private Integer id; 
     private String usuario;
     private String contrasena;
 }
