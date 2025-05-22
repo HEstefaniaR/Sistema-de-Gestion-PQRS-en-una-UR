@@ -28,9 +28,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
 
     @Override
     public String guardarRespuesta(RespuestaModel respuesta) {
-        respuestaRepo.save(respuesta);
-
-        ObjectId solicitudId = respuesta.getSolicitudId(); 
+        ObjectId solicitudId = respuesta.getSolicitudId();
         if (solicitudId == null) {
             throw new IllegalArgumentException("El ID de la solicitud en la respuesta es nulo.");
         }
@@ -39,17 +37,17 @@ public class RespuestaServiceImpl implements IRespuestaService {
             new Query(Criteria.where("_id").is(solicitudId)),
             "Solicitudes"
         );
-
         if (!solicitudExiste) {
             throw new IllegalArgumentException("La solicitud con ID " + solicitudId + " no existe.");
         }
+
+        respuestaRepo.save(respuesta);
 
         RespuestaEmbed embed = new RespuestaEmbed(
             respuesta.getId(),
             respuesta.getComentario(),
             new Date()
         );
-
         Update update = new Update().push("respuestas", embed);
         mongoTemplate.updateFirst(
             new Query(Criteria.where("_id").is(solicitudId)),
@@ -72,23 +70,21 @@ public class RespuestaServiceImpl implements IRespuestaService {
     }
 
     @Override
-    public RespuestaModel actualizarRespuesta(ObjectId id, RespuestaModel respuesta) { 
+    public RespuestaModel actualizarRespuesta(ObjectId id, RespuestaModel respuesta) {
         respuestaRepo.save(respuesta);
 
-        ObjectId solicitudId = respuesta.getSolicitudId();  
+        ObjectId solicitudId = respuesta.getSolicitudId();
         if (solicitudId == null) {
             throw new IllegalArgumentException("El ID de la solicitud en la respuesta es nulo.");
         }
 
         Query query = new Query(
             Criteria.where("_id").is(solicitudId)
-                    .and("respuestas.respuestaId").is(respuesta.getId())
+                .and("respuestas.respuestaId").is(respuesta.getId())
         );
-
         Update update = new Update()
             .set("respuestas.$.comentario", respuesta.getComentario())
             .set("respuestas.$.fechaRespuesta", new Date());
-
         mongoTemplate.updateFirst(query, update, "Solicitudes");
 
         return respuesta;
@@ -103,7 +99,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
 
         respuestaRepo.deleteById(id);
 
-        ObjectId solicitudId = respuesta.getSolicitudId(); 
+        ObjectId solicitudId = respuesta.getSolicitudId();
         if (solicitudId != null) {
             Query query = new Query(Criteria.where("_id").is(solicitudId));
             Update update = new Update().pull("respuestas", new Document("respuestaId", respuesta.getId()));
