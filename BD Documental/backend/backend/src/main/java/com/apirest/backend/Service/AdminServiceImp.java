@@ -3,6 +3,7 @@ package com.apirest.backend.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class AdminServiceImp implements IAdminService {
     }
 
     @Override
-    public AdminModel buscarAdminPorId(Integer id) {
+    public AdminModel buscarAdminPorId(ObjectId id) {
         Optional<AdminModel> adminOptional = adminRepository.findById(id);
         return adminOptional.orElse(null);
     }

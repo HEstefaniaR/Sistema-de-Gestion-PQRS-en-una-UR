@@ -6,6 +6,9 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.bson.types.ObjectId;
 
 import lombok.AllArgsConstructor;
@@ -18,14 +21,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SolicitudesModel {
     @Id
-    private Integer id;
+    private ObjectId id;
     private String tipo;
     private String Categoria;
     private String descripcion;
     private EstadoSolicitud estado;
     private LocalDateTime fechaHoraCreacion;
     private LocalDateTime fechaActualizacion;
-    private Integer usuarioId;
+    private ObjectId usuarioId;
     private List<RespuestaResumen> respuestas;
      private List<EvidenciaEmbed> evidencias;
 
@@ -33,7 +36,7 @@ public class SolicitudesModel {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RespuestaResumen {
-        private Integer respuestaId;
+        private ObjectId respuestaId;
         private String comentario;
         private Date fechaRespuesta;
     }
@@ -51,8 +54,13 @@ public class SolicitudesModel {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SolicitudResumen {
-        private Integer SolicitudId;
+        private ObjectId SolicitudId;
         private java.util.Date fechaCreacion;
         private String estado;
+    }
+
+    @JsonProperty("id")
+    public String getIdString() {
+        return id != null ? id.toHexString() : null;
     }
 }

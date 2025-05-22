@@ -1,5 +1,7 @@
 [{
-  "_id": 1,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb93"
+  },
   "tipo": "Reclamo",
   "categoria": "ServiciosGenerales",
   "descripcion": "La recolección de basura no se está haciendo en los horarios establecidos.",
@@ -10,10 +12,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-04T10:00:00.000Z"
   },
-  "usuarioId": 4,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb92"
+  },
   "Respuestas": [
     {
-      "respuestaId": 1,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb3"
+      },
       "comentario": "Han pasado varios días y la basura sigue acumulada. ¿Cuándo lo resolverán?",
       "fechaRespuesta": {
         "$date": "2025-04-04T10:00:00.000Z"
@@ -46,7 +52,9 @@
   ]
 },
 {
-  "_id": 2,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb96"
+  },
   "tipo": "Peticion",
   "categoria": "AreasComunes",
   "descripcion": "Se solicita colocar una banca adicional en la zona de juegos.",
@@ -57,10 +65,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-06T09:00:00.000Z"
   },
-  "usuarioId": 5,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  },
   "Respuestas": [
     {
-      "respuestaId": 2,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb4"
+      },
       "comentario": "La banca aún no ha sido instalada. ¿Hubo algún inconveniente?",
       "fechaRespuesta": {
         "$date": "2025-04-06T09:00:00.000Z"
@@ -93,7 +105,9 @@
   ]
 },
 {
-  "_id": 3,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb9c"
+  },
   "tipo": "Queja",
   "categoria": "Seguridad",
   "descripcion": "Se han visto personas sospechosas rondando la entrada trasera.",
@@ -104,10 +118,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-06T14:30:00.000Z"
   },
-  "usuarioId": 6,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb9b"
+  },
   "Respuestas": [
     {
-      "respuestaId": 3,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb5"
+      },
       "comentario": "Hoy volvieron a verse personas sospechosas. ¿Se pueden tomar medidas urgentes?",
       "fechaRespuesta": {
         "$date": "2025-04-06T14:30:00.000Z"
@@ -125,22 +143,13 @@
       "fechaRegistro": {
         "$date": "2025-04-05T20:00:00.000Z"
       }
-    },
-    {
-      "evidenciaId": {
-        "$oid": "682df621bea41e54d7935dfd"
-      },
-      "tipoArchivo": "imagen",
-      "rutaArchivo": "uploads/fecb071c-9dc4-4f4a-9e9f-cc385017c2fc_placeholder.png",
-      "descripcion": "Foto 6: Zona verde descuidada",
-      "fechaRegistro": {
-        "$date": "2025-04-05T20:00:00.000Z"
-      }
     }
   ]
 },
 {
-  "_id": 4,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba0"
+  },
   "tipo": "Sugerencia",
   "categoria": "AreasComunes",
   "descripcion": "Sería útil tener un calendario de uso del salón comunal.",
@@ -151,10 +160,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-08T08:20:00.000Z"
   },
-  "usuarioId": 7
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb9f"
+  }
 },
 {
-  "_id": 5,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba3"
+  },
   "tipo": "Reclamo",
   "categoria": "ServiciosGenerales",
   "descripcion": "La presión del agua en mi casa es muy baja desde hace días.",
@@ -165,10 +178,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-08T09:30:00.000Z"
   },
-  "usuarioId": 8,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fba2"
+  },
   "Respuestas": [
     {
-      "respuestaId": 5,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb6"
+      },
       "comentario": "La presión del agua sigue muy baja. El técnico no vino.",
       "fechaRespuesta": {
         "$date": "2025-04-08T09:30:00.000Z"
@@ -177,7 +194,9 @@
   ]
 },
 {
-  "_id": 6,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb87"
+  },
   "tipo": "Peticion",
   "categoria": "Seguridad",
   "descripcion": "Solicito la instalación de cámaras en el parqueadero.",
@@ -188,10 +207,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-09T12:00:00.000Z"
   },
-  "usuarioId": 1
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb86"
+  }
 },
 {
-  "_id": 7,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8b"
+  },
   "tipo": "Queja",
   "categoria": "AreasComunes",
   "descripcion": "Los juegos infantiles están oxidados y podrían causar accidentes.",
@@ -202,10 +225,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-10T16:00:00.000Z"
   },
-  "usuarioId": 2,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8a"
+  },
   "Respuestas": [
     {
-      "respuestaId": 7,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb7"
+      },
       "comentario": "Los juegos siguen igual. Nadie ha venido a revisarlos.",
       "fechaRespuesta": {
         "$date": "2025-04-10T16:00:00.000Z"
@@ -214,7 +241,9 @@
   ]
 },
 {
-  "_id": 8,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb90"
+  },
   "tipo": "Sugerencia",
   "categoria": "ServiciosGenerales",
   "descripcion": "Podríamos usar energía solar para las luces externas.",
@@ -225,10 +254,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-12T10:45:00.000Z"
   },
-  "usuarioId": 3
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8f"
+  }
 },
 {
-  "_id": 9,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb94"
+  },
   "tipo": "Peticion",
   "categoria": "ServiciosGenerales",
   "descripcion": "Solicito revisión del sistema eléctrico del edificio 3.",
@@ -239,10 +272,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-12T08:50:00.000Z"
   },
-  "usuarioId": 4
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb92"
+  }
 },
 {
-  "_id": 10,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb97"
+  },
   "tipo": "Queja",
   "categoria": "Seguridad",
   "descripcion": "El vigilante de la noche suele quedarse dormido.",
@@ -253,10 +290,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-13T02:00:00.000Z"
   },
-  "usuarioId": 5
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  }
 },
 {
-  "_id": 11,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb9d"
+  },
   "tipo": "Sugerencia",
   "categoria": "Seguridad",
   "descripcion": "Proponer patrullajes internos cada 2 horas.",
@@ -267,10 +308,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-14T12:00:00.000Z"
   },
-  "usuarioId": 6
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb9b"
+  }
 },
 {
-  "_id": 12,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba1"
+  },
   "tipo": "Reclamo",
   "categoria": "AreasComunes",
   "descripcion": "El gimnasio permanece cerrado sin aviso.",
@@ -281,10 +326,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-16T09:10:00.000Z"
   },
-  "usuarioId": 7,
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb9f"
+  },
   "Respuestas": [
     {
-      "respuestaId": 11,
+      "respuestaId": {
+        "$oid": "682e6690ef52d26ca093fbb8"
+      },
       "comentario": "El gimnasio sigue cerrado. No se ha informado nada nuevo.",
       "fechaRespuesta": {
         "$date": "2025-04-16T09:10:00.000Z"
@@ -293,7 +342,9 @@
   ]
 },
 {
-  "_id": 13,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba4"
+  },
   "tipo": "Peticion",
   "categoria": "ServiciosGenerales",
   "descripcion": "Solicito limpieza urgente de las escaleras del bloque B.",
@@ -304,10 +355,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-15T15:00:00.000Z"
   },
-  "usuarioId": 8
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fba2"
+  }
 },
 {
-  "_id": 14,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbb9"
+  },
   "tipo": "Queja",
   "categoria": "Seguridad",
   "descripcion": "Las cámaras del parque están dañadas.",
@@ -318,10 +373,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-17T08:30:00.000Z"
   },
-  "usuarioId": 1
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb86"
+  }
 },
 {
-  "_id": 15,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb88"
+  },
   "tipo": "Sugerencia",
   "categoria": "AreasComunes",
   "descripcion": "Instalar señalética para ubicar zonas comunes fácilmente.",
@@ -332,10 +391,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-18T09:45:00.000Z"
   },
-  "usuarioId": 2
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8a"
+  }
 },
 {
-  "_id": 16,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8c"
+  },
   "tipo": "Peticion",
   "categoria": "ServiciosGenerales",
   "descripcion": "Solicitud de mantenimiento del ascensor de la torre 3.",
@@ -346,10 +409,14 @@
   "fechaActualizacion": {
     "$date": "2025-03-03T10:00:00.000Z"
   },
-  "usuarioId": 2
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8a"
+  }
 },
 {
-  "_id": 17,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb89"
+  },
   "tipo": "Queja",
   "categoria": "Seguridad",
   "descripcion": "Ruido excesivo en el apartamento 502 después de las 11 PM.",
@@ -360,10 +427,14 @@
   "fechaActualizacion": {
     "$date": "2025-03-04T08:00:00.000Z"
   },
-  "usuarioId": 1
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb86"
+  }
 },
 {
-  "_id": 18,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8d"
+  },
   "tipo": "Reclamo",
   "categoria": "ServiciosGenerales",
   "descripcion": "Cobro indebido en la factura de administración de marzo.",
@@ -374,10 +445,14 @@
   "fechaActualizacion": {
     "$date": "2025-03-05T09:00:00.000Z"
   },
-  "usuarioId": 3
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8f"
+  }
 },
 {
-  "_id": 19,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8e"
+  },
   "tipo": "Sugerencia",
   "categoria": "Seguridad",
   "descripcion": "Instalación de más cámaras de seguridad en el parqueadero.",
@@ -388,10 +463,14 @@
   "fechaActualizacion": {
     "$date": "2025-03-06T11:15:00.000Z"
   },
-  "usuarioId": 2
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb8a"
+  }
 },
 {
-  "_id": 20,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb91"
+  },
   "tipo": "Peticion",
   "categoria": "ServiciosGenerales",
   "descripcion": "Aumento de frecuencia en la recolección de basuras.",
@@ -402,10 +481,14 @@
   "fechaActualizacion": {
     "$date": "2025-03-06T18:00:00.000Z"
   },
-  "usuarioId": 6
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb9b"
+  }
 },
 {
-  "_id": 21,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb9e"
+  },
   "tipo": "Queja",
   "categoria": "ServiciosGenerales",
   "descripcion": "Problemas con la presión del agua en la torre 2.",
@@ -416,10 +499,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-03T09:00:00.000Z"
   },
-  "usuarioId": 5
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  }
 },
 {
-  "_id": 22,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb98"
+  },
   "tipo": "Queja",
   "categoria": "ServiciosGenerales",
   "descripcion": "El ascensor se detiene entre pisos frecuentemente.",
@@ -430,10 +517,14 @@
   "fechaActualizacion": {
     "$date": "2025-04-19T10:00:00.000Z"
   },
-  "usuarioId": 5
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  }
 },
 {
-  "_id": 23,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb99"
+  },
   "tipo": "Reclamo",
   "categoria": "AreasComunes",
   "descripcion": "El techo de la portería presenta filtraciones.",
@@ -444,5 +535,7 @@
   "fechaActualizacion": {
     "$date": "2025-04-20T11:00:00.000Z"
   },
-  "usuarioId": 5
+  "usuarioId": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  }
 }]

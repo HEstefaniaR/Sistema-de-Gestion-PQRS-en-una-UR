@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -29,7 +30,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
     public String guardarRespuesta(RespuestaModel respuesta) {
         respuestaRepo.save(respuesta);
 
-        Integer solicitudId = respuesta.getSolicitudId();
+        ObjectId solicitudId = respuesta.getSolicitudId(); 
         if (solicitudId == null) {
             throw new IllegalArgumentException("El ID de la solicitud en la respuesta es nulo.");
         }
@@ -65,16 +66,16 @@ public class RespuestaServiceImpl implements IRespuestaService {
     }
 
     @Override
-    public RespuestaModel buscarRespuestaPorId(Integer id) {
+    public RespuestaModel buscarRespuestaPorId(ObjectId id) {
         Optional<RespuestaModel> respuesta = respuestaRepo.findById(id);
         return respuesta.orElse(null);
     }
 
     @Override
-    public RespuestaModel actualizarRespuesta(Integer id, RespuestaModel respuesta) {
+    public RespuestaModel actualizarRespuesta(ObjectId id, RespuestaModel respuesta) { 
         respuestaRepo.save(respuesta);
 
-        Integer solicitudId = respuesta.getSolicitudId();
+        ObjectId solicitudId = respuesta.getSolicitudId();  
         if (solicitudId == null) {
             throw new IllegalArgumentException("El ID de la solicitud en la respuesta es nulo.");
         }
@@ -94,7 +95,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
     }
 
     @Override
-    public String eliminarRespuesta(Integer id) {
+    public String eliminarRespuesta(ObjectId id) {
         RespuestaModel respuesta = respuestaRepo.findById(id).orElse(null);
         if (respuesta == null) {
             throw new IllegalArgumentException("La respuesta con ID " + id + " no existe.");
@@ -102,7 +103,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
 
         respuestaRepo.deleteById(id);
 
-        Integer solicitudId = respuesta.getSolicitudId();
+        ObjectId solicitudId = respuesta.getSolicitudId(); 
         if (solicitudId != null) {
             Query query = new Query(Criteria.where("_id").is(solicitudId));
             Update update = new Update().pull("respuestas", new Document("respuestaId", respuesta.getId()));

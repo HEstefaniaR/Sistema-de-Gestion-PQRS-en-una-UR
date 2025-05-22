@@ -2,6 +2,7 @@ package com.apirest.backend.Controller;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class AdminController {
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<AdminModel> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<AdminModel> buscarPorId(@PathVariable ObjectId id) {
         AdminModel admin = adminService.buscarAdminPorId(id);
         if (admin != null) {
             return new ResponseEntity<>(admin, HttpStatus.OK);

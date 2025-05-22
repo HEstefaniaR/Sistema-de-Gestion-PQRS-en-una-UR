@@ -58,7 +58,7 @@ public class SolicitudController {
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<SolicitudesModel> buscarSolicitudPorId(@PathVariable Integer id) {
+    public ResponseEntity<SolicitudesModel> buscarSolicitudPorId(@PathVariable ObjectId id) {
         SolicitudesModel solicitud = solicitudesService.buscarSolicitudPorId(id);
         if (solicitud == null) {
             return ResponseEntity.notFound().build();
@@ -68,7 +68,7 @@ public class SolicitudController {
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> actualizarSolicitud(
-            @PathVariable Integer id,
+            @PathVariable ObjectId id,
             @RequestBody SolicitudesModel nuevaSolicitud,
             @RequestParam String usuario,
             @RequestParam(required = false) String contrasena) {
@@ -101,7 +101,7 @@ public class SolicitudController {
 
     @PostMapping(value = "/{id}/evidencias", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> guardarEvidencia(
-            @PathVariable Integer id,
+            @PathVariable ObjectId id,
             @RequestParam("archivo") MultipartFile archivo,
             @RequestParam("usuario") String usuario,
             @RequestParam(value = "contrasena", required = false) String contrasena,
@@ -147,7 +147,7 @@ public class SolicitudController {
     }
 
     @GetMapping("/{id}/evidencias")
-    public ResponseEntity<?> obtenerEvidenciasSolicitud(@PathVariable Integer id) {
+    public ResponseEntity<?> obtenerEvidenciasSolicitud(@PathVariable ObjectId id) {
         SolicitudesModel solicitud = solicitudesService.buscarSolicitudPorId(id);
         if (solicitud == null) {
             return ResponseEntity.badRequest().body("Solicitud no válida");
@@ -158,7 +158,7 @@ public class SolicitudController {
 
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> actualizarEstadoSolicitud(
-            @PathVariable Integer id,
+            @PathVariable ObjectId id,
             @RequestBody CambiarEstadoSolicitud estadoDto,
             @RequestParam String usuario,
             @RequestParam String contrasena) {

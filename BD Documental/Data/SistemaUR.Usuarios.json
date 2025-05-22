@@ -1,5 +1,7 @@
 [{
-  "_id": 1,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb86"
+  },
   "usuario": "jlopez",
   "nombreCompleto": "Juan López",
   "tipoDocumento": "cc",
@@ -14,21 +16,27 @@
   "contrasena": "pass123",
   "solicitudes": [
     {
-      "SolicitudId": 6,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb87"
+      },
       "fechaCreacion": {
         "$date": "2025-04-08T22:45:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 15,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb88"
+      },
       "fechaCreacion": {
         "$date": "2025-04-16T11:55:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 17,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb89"
+      },
       "fechaCreacion": {
         "$date": "2025-03-03T02:15:00.000Z"
       },
@@ -37,7 +45,9 @@
   ]
 },
 {
-  "_id": 2,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8a"
+  },
   "usuario": "mruiz",
   "nombreCompleto": "María Ruiz",
   "tipoDocumento": "cc",
@@ -52,28 +62,36 @@
   "contrasena": "maria321",
   "solicitudes": [
     {
-      "SolicitudId": 7,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb8b"
+      },
       "fechaCreacion": {
         "$date": "2025-04-09T15:50:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 16,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb8c"
+      },
       "fechaCreacion": {
         "$date": "2025-04-17T15:20:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 18,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb8d"
+      },
       "fechaCreacion": {
         "$date": "2025-03-01T13:30:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 19,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb8e"
+      },
       "fechaCreacion": {
         "$date": "2025-03-04T19:45:00.000Z"
       },
@@ -82,7 +100,9 @@
   ]
 },
 {
-  "_id": 3,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb8f"
+  },
   "usuario": "cperez",
   "nombreCompleto": "Carlos Pérez",
   "tipoDocumento": "cc",
@@ -97,14 +117,18 @@
   "contrasena": "carlos456",
   "solicitudes": [
     {
-      "SolicitudId": 8,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb90"
+      },
       "fechaCreacion": {
         "$date": "2025-04-10T19:40:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 20,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb91"
+      },
       "fechaCreacion": {
         "$date": "2025-03-03T15:00:00.000Z"
       },
@@ -113,7 +137,9 @@
   ]
 },
 {
-  "_id": 4,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb92"
+  },
   "usuario": "avillamizar",
   "nombreCompleto": "Ana Villamizar",
   "tipoDocumento": "cc",
@@ -128,14 +154,18 @@
   "contrasena": "ana789",
   "solicitudes": [
     {
-      "SolicitudId": 1,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb93"
+      },
       "fechaCreacion": {
         "$date": "2025-04-03T14:10:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 9,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb94"
+      },
       "fechaCreacion": {
         "$date": "2025-04-11T14:00:00.000Z"
       },
@@ -144,7 +174,9 @@
   ]
 },
 {
-  "_id": 5,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb95"
+  },
   "usuario": "jrodriguez",
   "nombreCompleto": "Jorge Rodríguez",
   "tipoDocumento": "ce",
@@ -159,35 +191,45 @@
   "contrasena": "jorge123",
   "solicitudes": [
     {
-      "SolicitudId": 2,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb96"
+      },
       "fechaCreacion": {
         "$date": "2025-04-04T16:30:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 10,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb97"
+      },
       "fechaCreacion": {
         "$date": "2025-04-12T05:30:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 22,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb98"
+      },
       "fechaCreacion": {
         "$date": "2025-04-02T12:50:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 23,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb99"
+      },
       "fechaCreacion": {
         "$date": "2025-04-18T14:00:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 24,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb9a"
+      },
       "fechaCreacion": {
         "$date": "2025-04-19T19:30:00.000Z"
       },
@@ -196,7 +238,9 @@
   ]
 },
 {
-  "_id": 6,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb9b"
+  },
   "usuario": "llopez",
   "nombreCompleto": "Laura López",
   "tipoDocumento": "cc",
@@ -211,21 +255,27 @@
   "contrasena": "laura321",
   "solicitudes": [
     {
-      "SolicitudId": 3,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb9c"
+      },
       "fechaCreacion": {
         "$date": "2025-04-06T01:00:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 11,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb9d"
+      },
       "fechaCreacion": {
         "$date": "2025-04-13T23:10:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 21,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fb9e"
+      },
       "fechaCreacion": {
         "$date": "2025-03-05T21:20:00.000Z"
       },
@@ -234,7 +284,9 @@
   ]
 },
 {
-  "_id": 7,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fb9f"
+  },
   "usuario": "fmedina",
   "nombreCompleto": "Felipe Medina",
   "tipoDocumento": "cc",
@@ -249,14 +301,18 @@
   "contrasena": "felipepass",
   "solicitudes": [
     {
-      "SolicitudId": 4,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fba0"
+      },
       "fechaCreacion": {
         "$date": "2025-04-06T18:15:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 12,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fba1"
+      },
       "fechaCreacion": {
         "$date": "2025-04-14T20:35:00.000Z"
       },
@@ -265,7 +321,9 @@
   ]
 },
 {
-  "_id": 8,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba2"
+  },
   "usuario": "cgarcia",
   "nombreCompleto": "Camila García",
   "tipoDocumento": "cc",
@@ -280,14 +338,18 @@
   "contrasena": "camila123",
   "solicitudes": [
     {
-      "SolicitudId": 5,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fba3"
+      },
       "fechaCreacion": {
         "$date": "2025-04-07T13:25:00.000Z"
       },
       "estado": "Radicada"
     },
     {
-      "SolicitudId": 13,
+      "SolicitudId": {
+        "$oid": "682e6690ef52d26ca093fba4"
+      },
       "fechaCreacion": {
         "$date": "2025-04-15T12:10:00.000Z"
       },
@@ -296,7 +358,9 @@
   ]
 },
 {
-  "_id": 9,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba5"
+  },
   "usuario": "aramos",
   "nombreCompleto": "Andrés Ramos",
   "tipoDocumento": "ce",
@@ -312,7 +376,9 @@
   "solicitudes": []
 },
 {
-  "_id": 10,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba6"
+  },
   "usuario": "nluna",
   "nombreCompleto": "Natalia Luna",
   "tipoDocumento": "cc",
@@ -328,7 +394,9 @@
   "solicitudes": []
 },
 {
-  "_id": 11,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba7"
+  },
   "usuario": "omartinez",
   "nombreCompleto": "Oscar Martínez",
   "tipoDocumento": "cc",
@@ -344,7 +412,9 @@
   "solicitudes": []
 },
 {
-  "_id": 12,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba8"
+  },
   "usuario": "dquintero",
   "nombreCompleto": "Diana Quintero",
   "tipoDocumento": "cc",
@@ -360,7 +430,9 @@
   "solicitudes": []
 },
 {
-  "_id": 13,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fba9"
+  },
   "usuario": "jperez",
   "nombreCompleto": "Juan Pérez",
   "tipoDocumento": "cc",
@@ -376,63 +448,81 @@
   "solicitudes": []
 },
 {
-  "_id": 14,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbaa"
+  },
   "usuario": "anon_1",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 15,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbab"
+  },
   "usuario": "anon_2",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 16,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbac"
+  },
   "usuario": "anon_3",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 17,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbad"
+  },
   "usuario": "anon_4",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 18,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbae"
+  },
   "usuario": "anon_5",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 19,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbaf"
+  },
   "usuario": "anon_6",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 20,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbb0"
+  },
   "usuario": "anon_7",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 21,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbb1"
+  },
   "usuario": "anon_8",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",
   "solicitudes": []
 },
 {
-  "_id": 22,
+  "_id": {
+    "$oid": "682e6690ef52d26ca093fbb2"
+  },
   "usuario": "anon_9",
   "nombreCompleto": "Anónimo",
   "rol": "anonimo",

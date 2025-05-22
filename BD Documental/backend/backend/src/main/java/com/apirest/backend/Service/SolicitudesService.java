@@ -40,17 +40,17 @@ public class SolicitudesService implements ISolicitudesService {
     }
 
     @Override
-    public SolicitudesModel buscarSolicitudPorId(Integer id) {
+    public SolicitudesModel buscarSolicitudPorId(ObjectId id) {
         return solicitudesRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Solicitud con ID " + id + " no encontrada."));
     }
 
-    public SolicitudesModel buscarSolicitudConEvidencias(Integer id) {
+    public SolicitudesModel buscarSolicitudConEvidencias(ObjectId id) {
         return solicitudesRepository.findSolicitudConEvidencias(id);
     }
 
     @Override
-    public SolicitudesModel actualizarSolicitud(Integer id, SolicitudesModel solicitudActualizada) {
+    public SolicitudesModel actualizarSolicitud(ObjectId id, SolicitudesModel solicitudActualizada) {
         SolicitudesModel existente = buscarSolicitudPorId(id);
 
         if (existente.getEstado() != EstadoSolicitud.radicada) {
@@ -63,7 +63,7 @@ public class SolicitudesService implements ISolicitudesService {
         return solicitudesRepository.save(existente);
     }
 
-    public SolicitudesModel agregarEvidenciaASolicitud(Integer idSolicitud, MultipartFile archivo, String descripcion) throws IOException {
+    public SolicitudesModel agregarEvidenciaASolicitud(ObjectId idSolicitud, MultipartFile archivo, String descripcion) throws IOException {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed nuevaEvidencia = new EvidenciaEmbed();
@@ -77,11 +77,11 @@ public class SolicitudesService implements ISolicitudesService {
     }
 
     @Override
-    public List<SolicitudesDTO> listarPorUsuarioId(Integer usuarioId) {
+    public List<SolicitudesDTO> listarPorUsuarioId(ObjectId usuarioId) {
         return solicitudesRepository.findByUsuarioId(usuarioId);
     }
 
-    public void eliminarEvidenciaDeSolicitud(Integer idSolicitud, String idEvidencia) throws IOException {
+    public void eliminarEvidenciaDeSolicitud(ObjectId idSolicitud, String idEvidencia) throws IOException {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed evidencia = solicitud.getEvidencias().stream()

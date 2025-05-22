@@ -2,6 +2,7 @@ package com.apirest.backend.Controller;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,12 @@ public class RespuestaController {
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<RespuestaModel> buscarRespuestaPorId(@PathVariable Integer id) {
+    public ResponseEntity<RespuestaModel> buscarRespuestaPorId(@PathVariable ObjectId id) {
         return new ResponseEntity<>(respuestaService.buscarRespuestaPorId(id), HttpStatus.OK);
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<String> actualizarRespuesta(@PathVariable Integer id, @RequestBody RespuestaModel respuesta) {
+    public ResponseEntity<String> actualizarRespuesta(@PathVariable ObjectId id, @RequestBody RespuestaModel respuesta) {
         RespuestaModel actualizada = respuestaService.actualizarRespuesta(id, respuesta);
         if (actualizada == null) {
             return new ResponseEntity<>("No se pudo actualizar la respuesta", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,7 +43,7 @@ public class RespuestaController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminarRespuesta(@PathVariable Integer id) {
+    public ResponseEntity<String> eliminarRespuesta(@PathVariable ObjectId id) {
         return ResponseEntity.ok(respuestaService.eliminarRespuesta(id));
     }
 }

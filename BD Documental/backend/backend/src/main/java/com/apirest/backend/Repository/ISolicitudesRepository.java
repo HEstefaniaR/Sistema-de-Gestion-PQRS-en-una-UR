@@ -2,18 +2,19 @@ package com.apirest.backend.Repository;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.apirest.backend.DTO.SolicitudesDTO;
 import com.apirest.backend.Model.SolicitudesModel;
 
-public interface ISolicitudesRepository extends MongoRepository<SolicitudesModel, Integer> {
+public interface ISolicitudesRepository extends MongoRepository<SolicitudesModel, ObjectId> {
     @Aggregation(pipeline = {
         "{ $match: { usuarioId: ?0 } }",
         "{ $project: { id: 1, tipo: 1, estado: 1 } }"
     })
-    List<SolicitudesDTO> findByUsuarioId(int usuarioId);
+    List<SolicitudesDTO> findByUsuarioId(ObjectId usuarioId);
     @Aggregation(pipeline = {
         "{ $match: { _id: ?0 } }", 
         "{ $lookup: { from: 'Evidencias', localField: '_id', foreignField: 'idSolicitud', as: 'evidencias' } }", 
@@ -22,9 +23,9 @@ public interface ISolicitudesRepository extends MongoRepository<SolicitudesModel
             "evidencias: { id: 1, tipoArchivo: 1, rutaArchivo: 1, fechaHoraCarga: 1 } " + 
         "} }"
     })
-    SolicitudesModel findSolicitudConEvidencias(Integer id);
+    SolicitudesModel findSolicitudConEvidencias(ObjectId id);
 
-    void deleteById(Integer id);
+    void deleteById(ObjectId id);
 
     List<SolicitudesModel> findByEstadoAndFechaActualizacionBefore(String estado, Date fecha);
 }
