@@ -12,7 +12,7 @@ import com.apirest.backend.Model.RespuestaModel;
 import com.apirest.backend.Service.IRespuestaService;
 
 @RestController
-@RequestMapping("UR/respuestas")
+@RequestMapping("/UR/respuestas")
 public class RespuestaController {
 
     @Autowired
@@ -20,30 +20,36 @@ public class RespuestaController {
 
     @PostMapping("/insertar")
     public ResponseEntity<String> crearRespuesta(@RequestBody RespuestaModel respuesta) {
-        return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.CREATED);
+        try {
+            String mensaje = respuestaService.guardarRespuesta(respuesta);
+            return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al crear la respuesta", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/listar")
     public ResponseEntity<List<RespuestaModel>> listarRespuestas() {
-        return new ResponseEntity<>(respuestaService.listarRespuestas(), HttpStatus.OK);
+        List<RespuestaModel> respuestas = respuestaService.listarRespuestas();
+        return new ResponseEntity<>(respuestas, HttpStatus.OK);
     }
 
     @GetMapping("/buscarporid/{id}")
-    public ResponseEntity<RespuestaModel> buscarRespuestaPorId(@PathVariable ObjectId id) {
-        return new ResponseEntity<>(respuestaService.buscarRespuestaPorId(id), HttpStatus.OK);
+    public ResponseEntity<?> buscarRespuestaPorId(@PathVariable String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            RespuestaModel respuesta = respuestaService.buscarRespuestaPorId(objectId);
+            if (respuesta == null) {
+                return new ResponseEntity<>("Respuesta no encontrada", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("ID inválido", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<String> actualizarRespuesta(@PathVariable ObjectId id, @RequestBody RespuestaModel respuesta) {
-        RespuestaModel actualizada = respuestaService.actualizarRespuesta(id, respuesta);
-        if (actualizada == null) {
-            return new ResponseEntity<>("No se pudo actualizar la respuesta", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>("Respuesta actualizada correctamente", HttpStatus.OK);
-    }
+    public ResponseEntity<String> actualizarRespuesta(@PathVariable String id, @RequestBody RespuestaModel respuesta
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminarRespuesta(@PathVariable ObjectId id) {
-        return ResponseEntity.ok(respuestaService.eliminarRespuesta(id));
-    }
-}
