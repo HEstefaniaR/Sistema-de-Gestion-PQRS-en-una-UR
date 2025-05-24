@@ -76,6 +76,7 @@ public class SolicitudController {
 
         UsuarioModel user = usuarioService.buscarPorUsuario(usuario);
         if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no válido");
+
         if (user.getRol() != RolUsuario.anonimo && (contrasena == null || !contrasena.equals(user.getContrasena())))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
 
@@ -85,8 +86,8 @@ public class SolicitudController {
         if (!solicitud.getUsuarioId().equals(user.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puede editar solicitudes de otros usuarios");
 
-        if (solicitud.getEstado() != EstadoSolicitud.Radicada)
-            return ResponseEntity.badRequest().body("Solo se pueden editar solicitudes en estado 'radicada'");
+        if (solicitud.getEstado() == EstadoSolicitud.Cerrada)
+            return ResponseEntity.badRequest().body("No se puede editar una solicitud que está en estado 'Cerrada'");
 
         if (nuevaSolicitud.getEstado() != null && !nuevaSolicitud.getEstado().equals(solicitud.getEstado()))
             return ResponseEntity.badRequest().body("No tiene autorización para cambiar el estado");

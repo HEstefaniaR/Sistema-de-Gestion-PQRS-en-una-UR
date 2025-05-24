@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -92,25 +91,6 @@ public class RespuestaServiceImpl implements IRespuestaService {
         mongoTemplate.updateFirst(query, update, "Solicitudes");
 
         return respuesta;
-    }
-
-    @Override
-    public String eliminarRespuesta(ObjectId id) {
-        RespuestaModel respuesta = respuestaRepo.findById(id).orElse(null);
-        if (respuesta == null) {
-            throw new IllegalArgumentException("La respuesta con ID " + id + " no existe.");
-        }
-
-        respuestaRepo.deleteById(id);
-
-        ObjectId solicitudId = respuesta.getSolicitudId();
-        if (solicitudId != null) {
-            Query query = new Query(Criteria.where("_id").is(solicitudId));
-            Update update = new Update().pull("respuestas", new Document("respuestaId", respuesta.getId()));
-            mongoTemplate.updateFirst(query, update, "Solicitudes");
-        }
-
-        return "Respuesta eliminada correctamente.";
     }
 
     @Override

@@ -76,9 +76,10 @@ public class SolicitudesService implements ISolicitudesService {
     public SolicitudesModel actualizarSolicitud(ObjectId id, SolicitudesModel solicitudActualizada) {
         SolicitudesModel existente = buscarSolicitudPorId(id);
 
-        if (existente.getEstado() != EstadoSolicitud.Radicada) {
-            throw new IllegalStateException("Solo se pueden editar solicitudes en estado 'radicada'");
+        if (existente.getEstado() == EstadoSolicitud.Cerrada) {
+            throw new IllegalStateException("No se puede editar una solicitud en estado 'Cerrada'");
         }
+
         existente.setCategoria(solicitudActualizada.getCategoria());
         existente.setDescripcion(solicitudActualizada.getDescripcion());
         existente.setTipo(solicitudActualizada.getTipo());
