@@ -30,7 +30,7 @@ public class SolicitudesModel {
     private LocalDateTime fechaHoraCreacion;
     private LocalDateTime fechaActualizacion;
     private ObjectId usuarioId;
-    private List<RespuestaResumen> respuestas;
+    private List<RespuestaResumen> Respuestas;
     private List<EvidenciaEmbed> evidencias;
 
     @JsonProperty("id")

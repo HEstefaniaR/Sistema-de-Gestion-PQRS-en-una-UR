@@ -2,6 +2,7 @@ package com.apirest.backend.Service;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +37,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public UsuarioModel buscarPorUsuario(String usuario) {
         return usuarioRepository.findByUsuario(usuario);
+    }
+
+    @Override
+    public UsuarioModel buscarPorId(ObjectId id) {
+        return usuarioRepository.findById(id).orElse(null);
     }
 }

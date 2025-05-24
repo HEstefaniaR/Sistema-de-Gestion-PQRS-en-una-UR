@@ -6,7 +6,7 @@ import com.apirest.backend.Model.RespuestaModel;
 
 public interface IRespuestaService {
 
-    String guardarRespuesta(RespuestaModel respuesta);
+    RespuestaModel guardarRespuesta(RespuestaModel respuesta);
 
     List<RespuestaModel> listarRespuestas();
 

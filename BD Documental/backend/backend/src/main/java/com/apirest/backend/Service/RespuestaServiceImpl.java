@@ -13,9 +13,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.apirest.backend.DTO.RespuestaEmbed;
 import com.apirest.backend.Model.RespuestaModel;
-
+import com.apirest.backend.Model.SolicitudesModel.RespuestaResumen;
 import com.apirest.backend.Repository.IRespuestaRepository;
 
 @Service
@@ -28,7 +27,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public String guardarRespuesta(RespuestaModel respuesta) {
+    public RespuestaModel guardarRespuesta(RespuestaModel respuesta) {
         ObjectId solicitudId = respuesta.getSolicitudId();
         if (solicitudId == null) {
             throw new IllegalArgumentException("El ID de la solicitud en la respuesta es nulo.");
@@ -44,11 +43,12 @@ public class RespuestaServiceImpl implements IRespuestaService {
 
         respuestaRepo.save(respuesta);
 
-        RespuestaEmbed embed = new RespuestaEmbed(
+        RespuestaResumen embed = new RespuestaResumen(
             respuesta.getId(),
             respuesta.getComentario(),
             new Date()
         );
+
         Update update = new Update().push("respuestas", embed);
         mongoTemplate.updateFirst(
             new Query(Criteria.where("_id").is(solicitudId)),
@@ -56,7 +56,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
             "Solicitudes"
         );
 
-        return "Respuesta guardada y agregada a la solicitud correctamente.";
+        return respuesta;
     }
 
     @Override
@@ -83,9 +83,11 @@ public class RespuestaServiceImpl implements IRespuestaService {
             Criteria.where("_id").is(solicitudId)
                 .and("respuestas.respuestaId").is(respuesta.getId())
         );
+
         Update update = new Update()
             .set("respuestas.$.comentario", respuesta.getComentario())
             .set("respuestas.$.fechaRespuesta", new Date());
+
         mongoTemplate.updateFirst(query, update, "Solicitudes");
 
         return respuesta;
@@ -111,7 +113,7 @@ public class RespuestaServiceImpl implements IRespuestaService {
     }
 
     @Override
-        public List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId) {
+    public List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId) {
         return respuestaRepo.findBySolicitudId(solicitudId);
     }
 }

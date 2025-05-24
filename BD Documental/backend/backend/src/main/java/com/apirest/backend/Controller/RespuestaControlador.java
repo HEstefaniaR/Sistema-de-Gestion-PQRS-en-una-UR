@@ -2,6 +2,7 @@ package com.apirest.backend.Controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,11 +54,23 @@ public class RespuestaControlador {
                 respuesta.setRutaArchivoPDF(rutaArchivo);
             }
 
+            RespuestaModel guardada = respuestaService.guardarRespuesta(respuesta);
+
+            SolicitudesModel.RespuestaResumen resumen = new SolicitudesModel.RespuestaResumen();
+            resumen.setRespuestaId(guardada.getId());
+            resumen.setComentario(guardada.getComentario());
+            resumen.setFechaRespuesta(guardada.getFechaRespuesta());
+
+            if (solicitud.getRespuestas() == null) {
+                solicitud.setRespuestas(new ArrayList<>());
+            }
+            solicitud.getRespuestas().add(resumen);
+
             solicitud.setEstado(EstadoSolicitud.Resuelta);
             solicitud.setFechaActualizacion(LocalDateTime.now());
             solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
-            return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.CREATED);
+            return new ResponseEntity<>(guardada, HttpStatus.CREATED);
 
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Error al guardar el archivo PDF: " + e.getMessage());
