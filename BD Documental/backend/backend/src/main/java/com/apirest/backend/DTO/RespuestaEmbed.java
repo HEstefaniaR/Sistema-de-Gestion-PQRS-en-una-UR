@@ -1,4 +1,4 @@
-package com.apirest.backend.DTO;
+package main.java.com.apirest.backend.DTO;
 
 import lombok.Data;
 import lombok.AllArgsConstructor;

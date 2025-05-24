@@ -1,0 +1,101 @@
+1. Personas con mas de 2 solicitudes y una calificacion menor a 3
+
+db.getCollection('Respuestas').aggregate(
+  [
+    {
+      $lookup: {
+        from: 'Administradores',
+        localField: 'autor.autorId',
+        foreignField: '_id',
+        as: 'adminInfo'
+      }
+    },
+    { $match: { 'autor.tipo': 'admin' } },
+    {
+      $group: {
+        _id: '$autor.autorId',
+        totalRespuestas: { $sum: 1 }
+      }
+    },
+    { $sort: { totalRespuestas: -1 } },
+    { $limit: 1 },
+    {
+      $project: {
+        _id: 0,
+        totalRespuestas: 1,
+        usuarioAdmin: '$adminInfo.usuario'
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
+
+2. Administrador que ha respondido más solicitudes
+
+db.getCollection('Usuarios').aggregate(
+  [
+    { $unwind: { path: '$solicitudes' } },
+    {
+      $lookup: {
+        from: 'Solicitudes',
+        localField: 'solicitudes.SolicitudId',
+        foreignField: '_id',
+        as: 'solicitud'
+      }
+    },
+    { $unwind: { path: '$solicitud' } },
+    {
+      $group: {
+        _id: '$_id',
+        nombreCompleto: {
+          $first: '$nombreCompleto'
+        },
+        solicitudes: {
+          $addToSet: '$solicitud._id'
+        },
+        todasLasRespuestas: {
+          $push: '$solicitud.Respuestas'
+        }
+      }
+    },
+    { $unwind: { path: '$todasLasRespuestas' } },
+    {
+      $lookup: {
+        from: 'Respuestas',
+        localField:
+          'todasLasRespuestas.respuestaId',
+        foreignField: '_id',
+        as: 'respuesta'
+      }
+    },
+    { $unwind: { path: '$respuesta' } },
+    {
+      $group: {
+        _id: '$_id',
+        nombreCompleto: {
+          $first: '$nombreCompleto'
+        },
+        solicitudes: { $first: '$solicitudes' },
+        peorCalificacion: {
+          $min: '$respuesta.puntuacion'
+        }
+      }
+    },
+    {
+      $project: {
+        nombreCompleto: 1,
+        SolicitudesRealizadas: {
+          $size: '$solicitudes'
+        },
+        peorCalificacion: 1,
+        _id: 0
+      }
+    },
+    {
+      $match: {
+        SolicitudesRealizadas: { $gt: 2 }
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
