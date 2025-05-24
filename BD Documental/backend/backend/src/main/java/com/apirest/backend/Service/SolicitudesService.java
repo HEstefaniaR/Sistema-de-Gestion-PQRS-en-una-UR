@@ -1,6 +1,7 @@
 package com.apirest.backend.Service;
 import java.io.IOException; 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -9,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.apirest.backend.DTO.SolicitudesDTO;
 import com.apirest.backend.Exception.RecursoNoEncontradoException;
 import com.apirest.backend.Model.EstadoSolicitud;
+import com.apirest.backend.Model.SolicitudResumen;
 import com.apirest.backend.Model.SolicitudesModel;
 import com.apirest.backend.Model.SolicitudesModel.EvidenciaEmbed;
 import com.apirest.backend.Model.TipoArchivo;
 import com.apirest.backend.Repository.ISolicitudesRepository;
+import com.apirest.backend.Repository.IUsuarioRepository;
 
 @Service
 public class SolicitudesService implements ISolicitudesService {
@@ -26,13 +28,34 @@ public class SolicitudesService implements ISolicitudesService {
     @Autowired
     private AlmacenamientoService almacenamientoService;
 
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
+
     @Override
     public SolicitudesModel guardarSolicitud(SolicitudesModel solicitud) {
         if (solicitud.getEstado() == null) {
             solicitud.setEstado(EstadoSolicitud.Radicada);
         }
-        return solicitudesRepository.save(solicitud);
+        SolicitudesModel guardada = solicitudesRepository.save(solicitud);
+
+        ObjectId usuarioId = guardada.getUsuarioId();
+        usuarioRepository.findById(usuarioId).ifPresent(usuario -> {
+            if (usuario.getSolicitudes() == null) {
+                usuario.setSolicitudes(new ArrayList<>());
+            }
+            SolicitudResumen resumen = new SolicitudResumen(
+                guardada.getId(),
+                guardada.getFechaHoraCreacion(),
+                guardada.getEstado().toString()
+            );
+            usuario.getSolicitudes().add(resumen);
+            usuarioRepository.save(usuario);
+        });
+
+        return guardada;
     }
+
+    
 
     @Override
     public List<SolicitudesModel> listarSolicitudes() {
@@ -77,8 +100,8 @@ public class SolicitudesService implements ISolicitudesService {
     }
 
     @Override
-    public List<SolicitudesDTO> listarPorUsuarioId(ObjectId usuarioId) {
-        return solicitudesRepository.findByUsuarioId(usuarioId);
+    public List<SolicitudesModel.SolicitudResumen> listarResumenesPorUsuarioId(ObjectId usuarioId) {
+        return solicitudesRepository.findResumenByUsuarioId(usuarioId);
     }
 
     public void eliminarEvidenciaDeSolicitud(ObjectId idSolicitud, String idEvidencia) throws IOException {
