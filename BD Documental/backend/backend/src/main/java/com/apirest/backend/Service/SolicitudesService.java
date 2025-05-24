@@ -29,7 +29,7 @@ public class SolicitudesService implements ISolicitudesService {
     @Override
     public SolicitudesModel guardarSolicitud(SolicitudesModel solicitud) {
         if (solicitud.getEstado() == null) {
-            solicitud.setEstado(EstadoSolicitud.radicada);
+            solicitud.setEstado(EstadoSolicitud.Radicada);
         }
         return solicitudesRepository.save(solicitud);
     }
@@ -53,7 +53,7 @@ public class SolicitudesService implements ISolicitudesService {
     public SolicitudesModel actualizarSolicitud(ObjectId id, SolicitudesModel solicitudActualizada) {
         SolicitudesModel existente = buscarSolicitudPorId(id);
 
-        if (existente.getEstado() != EstadoSolicitud.radicada) {
+        if (existente.getEstado() != EstadoSolicitud.Radicada) {
             throw new IllegalStateException("Solo se pueden editar solicitudes en estado 'radicada'");
         }
         existente.setCategoria(solicitudActualizada.getCategoria());

@@ -17,6 +17,7 @@ import com.apirest.backend.Model.AdminModel;
 import com.apirest.backend.Model.EstadoSolicitud;
 import com.apirest.backend.Model.RolUsuario;
 import com.apirest.backend.Model.SolicitudesModel;
+import com.apirest.backend.Model.TipoArchivo;
 import com.apirest.backend.Model.UsuarioModel;
 import com.apirest.backend.Service.AlmacenamientoService;
 import com.apirest.backend.Service.IAdminService;
@@ -84,7 +85,7 @@ public class SolicitudController {
         if (!solicitud.getUsuarioId().equals(user.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puede editar solicitudes de otros usuarios");
 
-        if (solicitud.getEstado() != EstadoSolicitud.radicada)
+        if (solicitud.getEstado() != EstadoSolicitud.Radicada)
             return ResponseEntity.badRequest().body("Solo se pueden editar solicitudes en estado 'radicada'");
 
         if (nuevaSolicitud.getEstado() != null && !nuevaSolicitud.getEstado().equals(solicitud.getEstado()))
@@ -125,12 +126,14 @@ public class SolicitudController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("La solicitud no pertenece al usuario");
 
         try {
-            String nombreArchivo = almacenamientoService.almacenarArchivo(archivo);  
+            String nombreArchivo = almacenamientoService.almacenarArchivo(archivo);
 
             SolicitudesModel.EvidenciaEmbed evidencia = new SolicitudesModel.EvidenciaEmbed();
             evidencia.setIdEvidencia(new ObjectId());
             evidencia.setFechaHoraCarga(LocalDateTime.now());
             evidencia.setRutaArchivo(nombreArchivo);
+            evidencia.setDescripcion(descripcion);
+            evidencia.setTipoArchivo(detectarTipoArchivo(archivo));
 
             if (solicitud.getEvidencias() == null) {
                 solicitud.setEvidencias(new java.util.ArrayList<>());
@@ -143,6 +146,29 @@ public class SolicitudController {
 
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Error al procesar archivo: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Tipo de archivo no soportado");
+        }
+    }
+    private TipoArchivo detectarTipoArchivo(MultipartFile archivo) {
+        String nombre = archivo.getOriginalFilename();
+        if (nombre == null || !nombre.contains(".")) throw new IllegalArgumentException("Nombre de archivo inválido");
+
+        String extension = nombre.substring(nombre.lastIndexOf('.') + 1).toLowerCase();
+
+        switch (extension) {
+            case "png":
+            case "jpeg":
+                return TipoArchivo.imagen;
+
+            case "mp4":
+                return TipoArchivo.video;
+
+            case "pdf":
+                return TipoArchivo.documento;
+
+            default:
+                throw new IllegalArgumentException("Tipo de archivo no soportado: " + extension);
         }
     }
 
@@ -171,7 +197,7 @@ public class SolicitudController {
         SolicitudesModel solicitud = solicitudesService.buscarSolicitudPorId(id);
         if (solicitud == null) return ResponseEntity.notFound().build();
 
-        if (solicitud.getEstado() == EstadoSolicitud.cerrada) {
+        if (solicitud.getEstado() == EstadoSolicitud.Cerrada) {
             return ResponseEntity.badRequest().body("No se puede modificar una solicitud cerrada.");
         }
 

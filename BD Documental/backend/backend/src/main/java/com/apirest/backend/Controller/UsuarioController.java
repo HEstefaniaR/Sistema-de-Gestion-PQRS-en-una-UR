@@ -31,5 +31,14 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioModel>> listarUsuarios() {
         return new ResponseEntity<>(usuarioService.listarUsuarios(), HttpStatus.OK);
     }
-
+    
+    @GetMapping("/buscarporusuario/{usuario}")
+    public ResponseEntity<?> buscarPorUsuario(@PathVariable String usuario) {
+        UsuarioModel usuarioEncontrado = usuarioService.buscarPorUsuario(usuario);
+        if (usuarioEncontrado == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuario no encontrado");
+        }
+        return ResponseEntity.ok(usuarioEncontrado);
+    }
 }

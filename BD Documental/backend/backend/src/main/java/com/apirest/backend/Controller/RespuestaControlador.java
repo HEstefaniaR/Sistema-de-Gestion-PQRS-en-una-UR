@@ -53,7 +53,7 @@ public class RespuestaControlador {
                 respuesta.setRutaArchivoPDF(rutaArchivo);
             }
 
-            solicitud.setEstado(EstadoSolicitud.resuelta);
+            solicitud.setEstado(EstadoSolicitud.Resuelta);
             solicitud.setFechaActualizacion(LocalDateTime.now());
             solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
@@ -114,7 +114,7 @@ public class RespuestaControlador {
         replica.setRespuestaPadre(new ObjectId());
         replica.setAutor(new RespuestaModel.Autor("usuario", user.getId()));
 
-        solicitud.setEstado(EstadoSolicitud.reabierta);
+        solicitud.setEstado(EstadoSolicitud.Reabierta);
         solicitud.setFechaActualizacion(LocalDateTime.now());
         solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
@@ -147,7 +147,7 @@ public class RespuestaControlador {
         respuesta.setAutor(new RespuestaModel.Autor("admin", admin.getId()));
         respuesta.setRespuestaPadre(new ObjectId());
 
-        solicitud.setEstado(EstadoSolicitud.resuelta);
+        solicitud.setEstado(EstadoSolicitud.Resuelta);
         solicitud.setFechaActualizacion(LocalDateTime.now());
         solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
@@ -167,7 +167,7 @@ public class RespuestaControlador {
         SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         if (solicitud == null) return ResponseEntity.notFound().build();
 
-        solicitud.setEstado(EstadoSolicitud.cerrada);
+        solicitud.setEstado(EstadoSolicitud.Cerrada);
         solicitud.setFechaActualizacion(LocalDateTime.now());
 
         return new ResponseEntity<>(solicitudService.actualizarSolicitud(idSolicitud, solicitud), HttpStatus.OK);
