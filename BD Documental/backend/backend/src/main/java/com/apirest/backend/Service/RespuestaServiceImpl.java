@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.apirest.backend.DTO.RespuestaEmbed;
 import com.apirest.backend.Model.RespuestaModel;
+
 import com.apirest.backend.Repository.IRespuestaRepository;
 
 @Service
@@ -107,5 +108,10 @@ public class RespuestaServiceImpl implements IRespuestaService {
         }
 
         return "Respuesta eliminada correctamente.";
+    }
+
+    @Override
+        public List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId) {
+        return respuestaRepo.findBySolicitudId(solicitudId);
     }
 }

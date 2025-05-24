@@ -15,4 +15,6 @@ public interface IRespuestaService {
     RespuestaModel actualizarRespuesta(ObjectId id, RespuestaModel respuesta);
 
     String eliminarRespuesta(ObjectId id);
+
+    List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId);
 }

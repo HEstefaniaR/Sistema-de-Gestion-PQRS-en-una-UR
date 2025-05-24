@@ -2,8 +2,10 @@ package com.apirest.backend.Controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
@@ -15,62 +17,62 @@ import com.apirest.backend.Service.*;
 
 @RestController
 @RequestMapping("UR/respuestas")
-public class RespuestaController {
+public class RespuestaControlador {
 
     @Autowired private IRespuestaService respuestaService;
-    @Autowired private ISolicitudService solicitudService;
+    @Autowired private ISolicitudesService solicitudService;
     @Autowired private IUsuarioService usuarioService;
     @Autowired private IAdminService adminService;
     @Autowired private AlmacenamientoService almacenamientoService;
 
     @PostMapping(value = "/responder/{idSolicitud}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> responderSolicitud(@PathVariable String idSolicitud,
+    public ResponseEntity<?> responderSolicitud(@PathVariable ObjectId idSolicitud,
                                                 @RequestParam String comentario,
                                                 @RequestParam(required = false) MultipartFile archivo,
                                                 @RequestParam String usuario,
                                                 @RequestParam String contrasena) {
         AdminModel admin = adminService.buscarPorUsuario(usuario);
         if (admin == null || !admin.getContrasena().equals(contrasena)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo administradores pueden responder.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo administradores pueden cambiar el estado");
         }
 
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         if (solicitud == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud no encontrada");
         }
 
         try {
             RespuestaModel respuesta = new RespuestaModel();
-            respuesta.setSolicitud(solicitud);
+            respuesta.setSolicitudId(solicitud.getId());
             respuesta.setComentario(comentario);
-            respuesta.setFechaRespuesta(LocalDateTime.now());
-            respuesta.setAdmin(admin);
+            respuesta.setFechaRespuesta(new Date());
+            respuesta.setAutor(new RespuestaModel.Autor("admin", admin.getId()));
 
             if (archivo != null && !archivo.isEmpty()) {
-                String rutaArchivo = almacenamientoService.guardarArchivo(archivo);
-                respuesta.setRutaOficioPdf(rutaArchivo);
+                String rutaArchivo = almacenamientoService.almacenarArchivo(archivo);
+                respuesta.setRutaArchivoPDF(rutaArchivo);
             }
 
             solicitud.setEstado(EstadoSolicitud.resuelta);
             solicitud.setFechaActualizacion(LocalDateTime.now());
-            solicitudService.actualizarSolicitudPorId(idSolicitud, solicitud);
+            solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
-            respuestaService.guardarRespuesta(respuesta);
-return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+            return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.CREATED);
+
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Error al guardar el archivo PDF: " + e.getMessage());
         }
     }
 
     @GetMapping("/por-solicitud/{idSolicitud}")
-    public ResponseEntity<?> obtenerRespuestas(@PathVariable String idSolicitud) {
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+    public ResponseEntity<?> obtenerRespuestas(@PathVariable ObjectId idSolicitud) {
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         if (solicitud == null) return ResponseEntity.notFound().build();
-        return new ResponseEntity<>(respuestaService.listarRespuestasPorSolicitud(solicitud), HttpStatus.OK);
+        return new ResponseEntity<>(respuestaService.listarRespuestasPorSolicitud(solicitud.getId()), HttpStatus.OK);
     }
 
     @PutMapping("/calificar/{idRespuesta}")
-    public ResponseEntity<?> calificarRespuesta(@PathVariable String idRespuesta,
+    public ResponseEntity<?> calificarRespuesta(@PathVariable ObjectId idRespuesta,
                                                 @RequestParam int puntuacion,
                                                 @RequestParam String usuario,
                                                 @RequestParam String contrasena) {
@@ -91,37 +93,37 @@ return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
 
     @PostMapping("/reabrir/{idSolicitud}")
-    public ResponseEntity<?> reabrirSolicitud(@PathVariable String idSolicitud,
+    public ResponseEntity<?> reabrirSolicitud(@PathVariable ObjectId idSolicitud,
                                               @RequestParam String comentario,
                                               @RequestParam String usuario,
                                               @RequestParam String contrasena,
-                                              @RequestParam String idRespuestaPadre) {
+                                              @RequestParam ObjectId idRespuestaPadre) {
         UsuarioModel user = usuarioService.buscarPorUsuario(usuario);
         if (user == null || !contrasena.equals(user.getContrasena()) || "Anónimo".equals(user.getNombreCompleto())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo usuarios registrados pueden reabrir.");
         }
 
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         RespuestaModel respuestaPadre = respuestaService.buscarRespuestaPorId(idRespuestaPadre);
         if (solicitud == null || respuestaPadre == null) return ResponseEntity.notFound().build();
 
         RespuestaModel replica = new RespuestaModel();
-        replica.setSolicitud(solicitud);
+        replica.setSolicitudId(solicitud.getId());
         replica.setComentario(comentario);
-        replica.setFechaRespuesta(LocalDateTime.now());
-        replica.setRespuestaPadre(respuestaPadre);
-        replica.setUsuario(user);
+        replica.setFechaRespuesta(new Date());
+        replica.setRespuestaPadre(new ObjectId());
+        replica.setAutor(new RespuestaModel.Autor("usuario", user.getId()));
 
         solicitud.setEstado(EstadoSolicitud.reabierta);
         solicitud.setFechaActualizacion(LocalDateTime.now());
-        solicitudService.actualizarSolicitudPorId(idSolicitud, solicitud);
+        solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
         return new ResponseEntity<>(respuestaService.guardarRespuesta(replica), HttpStatus.CREATED);
     }
 
     @PostMapping("/responder-replica/{idSolicitud}")
-    public ResponseEntity<?> responderAReplica(@PathVariable String idSolicitud,
-                                               @RequestParam String idRespuestaPadre,
+    public ResponseEntity<?> responderAReplica(@PathVariable ObjectId idSolicitud,
+                                               @RequestParam ObjectId idRespuestaPadre,
                                                @RequestParam String comentario,
                                                @RequestParam String usuario,
                                                @RequestParam String contrasena) {
@@ -131,7 +133,7 @@ return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas.");
         }
 
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         RespuestaModel respuestaPadre = respuestaService.buscarRespuestaPorId(idRespuestaPadre);
 
         if (solicitud == null || respuestaPadre == null) {
@@ -139,46 +141,47 @@ return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         }
 
         RespuestaModel respuesta = new RespuestaModel();
-        respuesta.setSolicitud(solicitud);
+        respuesta.setSolicitudId(solicitud.getId());
         respuesta.setComentario(comentario);
-        respuesta.setFechaRespuesta(LocalDateTime.now());
-        respuesta.setAdmin(admin);
-        respuesta.setRespuestaPadre(respuestaPadre);
+        respuesta.setFechaRespuesta(new Date());
+        respuesta.setAutor(new RespuestaModel.Autor("admin", admin.getId()));
+        respuesta.setRespuestaPadre(new ObjectId());
 
         solicitud.setEstado(EstadoSolicitud.resuelta);
         solicitud.setFechaActualizacion(LocalDateTime.now());
-        solicitudService.actualizarSolicitudPorId(idSolicitud, solicitud);
+        solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
         return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.CREATED);
     }
 
     @PutMapping("/cerrar-definitivo/{idSolicitud}")
-    public ResponseEntity<?> cerrarSolicitud(@PathVariable String idSolicitud,
+    public ResponseEntity<?> cerrarSolicitud(@PathVariable ObjectId idSolicitud,
                                              @RequestParam String usuario,
                                              @RequestParam String contrasena) {
+
         AdminModel admin = adminService.buscarPorUsuario(usuario);
         if (admin == null || !contrasena.equals(admin.getContrasena())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas.");
         }
 
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         if (solicitud == null) return ResponseEntity.notFound().build();
 
         solicitud.setEstado(EstadoSolicitud.cerrada);
         solicitud.setFechaActualizacion(LocalDateTime.now());
 
-        return new ResponseEntity<>(solicitudService.actualizarSolicitudPorId(idSolicitud, solicitud), HttpStatus.OK);
+        return new ResponseEntity<>(solicitudService.actualizarSolicitud(idSolicitud, solicitud), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaModel> obtenerRespuestaPorId(@PathVariable String id) {
+    public ResponseEntity<?> obtenerRespuestaPorId(@PathVariable ObjectId id) {
         RespuestaModel respuesta = respuestaService.buscarRespuestaPorId(id);
         if (respuesta == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(respuesta);
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> actualizarRespuesta(@PathVariable String id,
+    public ResponseEntity<?> actualizarRespuesta(@PathVariable ObjectId id,
                                                  @RequestBody RespuestaModel nuevaRespuesta,
                                                  @RequestParam String usuario,
                                                  @RequestParam String contrasena) {
@@ -187,7 +190,8 @@ return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas.");
         }
 
-        AdminModel admin = adminService.buscarAdminPorId(usuarioAutenticado.getIdUsuario());
+        ObjectId idAdmin = new ObjectId(usuarioAutenticado.getUsuario());
+        AdminModel admin = adminService.buscarAdminPorId(idAdmin);
         if (admin == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo el administrador puede actualizar.");
         }
@@ -195,27 +199,27 @@ return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         RespuestaModel existente = respuestaService.buscarRespuestaPorId(id);
         if (existente == null) return ResponseEntity.notFound().build();
 
-        if (existente.getAdmin() == null || !existente.getAdmin().getIdadmin().equals(admin.getIdadmin())) {
+        if (existente.getAutor() == null || !existente.getAutor().getAutorId().equals(admin.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes modificar una respuesta de otro administrador.");
         }
 
-        List<RespuestaModel> posiblesReplicas = respuestaService.listarRespuestasPorSolicitud(existente.getSolicitud());
+        List<RespuestaModel> posiblesReplicas = respuestaService.listarRespuestasPorSolicitud(existente.getSolicitudId());
         boolean tieneReplica = posiblesReplicas.stream().anyMatch(r ->
-            r.getRespuestaPadre() != null && r.getRespuestaPadre().getIdRespuesta().equals(existente.getIdRespuesta())
+            r.getRespuestaPadre() != null && r.getRespuestaPadre().equals(existente.getId())
         );
         if (tieneReplica) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede actualizar una respuesta que ya fue replicada por un usuario.");
         }
 
         existente.setComentario(nuevaRespuesta.getComentario());
-        existente.setRutaOficioPdf(nuevaRespuesta.getRutaOficioPdf());
+        existente.setRutaArchivoPDF(nuevaRespuesta.getRutaArchivoPDF());
         return new ResponseEntity<>(respuestaService.guardarRespuesta(existente), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarRespuesta(@PathVariable String id) {
+    public ResponseEntity<?> eliminarRespuesta(@PathVariable ObjectId id) {
         try {
-            respuestaService.eliminarRespuestaPorId(id);
+            respuestaService.eliminarRespuesta(id);
             return ResponseEntity.ok("Respuesta eliminada exitosamente.");
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)

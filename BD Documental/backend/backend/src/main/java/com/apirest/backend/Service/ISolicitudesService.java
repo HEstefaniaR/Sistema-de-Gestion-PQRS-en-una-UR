@@ -12,7 +12,7 @@ import com.apirest.backend.Model.SolicitudesModel;
 public interface ISolicitudesService {
     SolicitudesModel guardarSolicitud(SolicitudesModel solicitud);
     List<SolicitudesModel> listarSolicitudes();
-    SolicitudesModel buscarSolicitudPorId(ObjectId id);
+    SolicitudesModel buscarSolicitudPorId(ObjectId idSolicitud);
     SolicitudesModel buscarSolicitudConEvidencias(ObjectId id);
     SolicitudesModel actualizarSolicitud(ObjectId id, SolicitudesModel solicitudActualizada);
     SolicitudesModel agregarEvidenciaASolicitud(ObjectId idSolicitud, MultipartFile archivo, String descripcion) throws IOException;
