@@ -17,6 +17,7 @@ import com.apirest.backend.Model.RespuestaModel;
 import com.apirest.backend.Model.SolicitudesModel.RespuestaResumen;
 import com.apirest.backend.Repository.IRespuestaRepository;
 
+
 @Service
 public class RespuestaServiceImpl implements IRespuestaService {
 
@@ -115,5 +116,18 @@ public class RespuestaServiceImpl implements IRespuestaService {
     @Override
     public List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId) {
         return respuestaRepo.findBySolicitudId(solicitudId);
+    }
+
+    @Override
+    public RespuestaModel buscarPrimerRespuestaAdminPorSolicitudId(ObjectId idSolicitud) {
+        return respuestaRepo.findFirstBySolicitudIdAndAutorTipoAndRespuestaPadreIsNullOrderByFechaRespuestaAsc(idSolicitud, "admin")
+                                .orElse(null);
+    }
+
+    @Override
+    public RespuestaModel buscarUltimaReplicaUsuarioPorSolicitudId(ObjectId solicitudId) {
+        return respuestaRepo.findFirstBySolicitudIdAndAutorTipoAndRespuestaPadreNotNullOrderByFechaRespuestaDesc(
+            solicitudId, "usuario"
+        );
     }
 }

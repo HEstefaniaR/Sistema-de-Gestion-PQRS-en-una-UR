@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.apirest.backend.Model.EstadoSolicitud;
 import com.apirest.backend.Model.SolicitudesModel;
 
 public interface ISolicitudesService {
@@ -16,4 +18,6 @@ public interface ISolicitudesService {
     SolicitudesModel agregarEvidenciaASolicitud(ObjectId idSolicitud, MultipartFile archivo, String descripcion) throws IOException;
     void eliminarEvidenciaDeSolicitud(ObjectId idSolicitud, String idEvidencia) throws IOException;
     List<SolicitudesModel.SolicitudResumen> listarResumenesPorUsuarioId(ObjectId usuarioId);
+    SolicitudesModel guardarSolicitudCompleta(SolicitudesModel solicitud);
+    void cambiarEstadoSolicitud(ObjectId idSolicitud, EstadoSolicitud nuevoEstado, boolean reabierta);
 }

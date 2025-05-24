@@ -34,12 +34,15 @@ public class RespuestaControlador {
                                                 @RequestParam String contrasena) {
         AdminModel admin = adminService.buscarPorUsuario(usuario);
         if (admin == null || !admin.getContrasena().equals(contrasena)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo administradores pueden cambiar el estado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo administradores pueden responder solicitudes.");
         }
 
         SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
         if (solicitud == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud no encontrada");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud no encontrada.");
+        }
+        if (solicitud.isRespuestaEnviada()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La solicitud ya ha recibido una respuesta inicial y no se puede responder de nuevo.");
         }
 
         try {
@@ -48,13 +51,18 @@ public class RespuestaControlador {
             respuesta.setComentario(comentario);
             respuesta.setFechaRespuesta(new Date());
             respuesta.setAutor(new RespuestaModel.Autor("admin", admin.getId()));
+            respuesta.setRespuestaPadre(null); 
 
             if (archivo != null && !archivo.isEmpty()) {
                 String rutaArchivo = almacenamientoService.almacenarArchivo(archivo);
                 respuesta.setRutaArchivoPDF(rutaArchivo);
             }
-
+            
             RespuestaModel guardada = respuestaService.guardarRespuesta(respuesta);
+
+            solicitud.setRespuestaEnviada(true);
+            solicitud.setEstado(EstadoSolicitud.Resuelta);
+            solicitud.setFechaActualizacion(LocalDateTime.now());
 
             SolicitudesModel.RespuestaResumen resumen = new SolicitudesModel.RespuestaResumen();
             resumen.setRespuestaId(guardada.getId());
@@ -66,9 +74,7 @@ public class RespuestaControlador {
             }
             solicitud.getRespuestas().add(resumen);
 
-            solicitud.setEstado(EstadoSolicitud.Resuelta);
-            solicitud.setFechaActualizacion(LocalDateTime.now());
-            solicitudService.actualizarSolicitud(idSolicitud, solicitud);
+            solicitudService.guardarSolicitudCompleta(solicitud);
 
             return new ResponseEntity<>(guardada, HttpStatus.CREATED);
 
@@ -100,46 +106,75 @@ public class RespuestaControlador {
 
         RespuestaModel respuesta = respuestaService.buscarRespuestaPorId(idRespuesta);
         if (respuesta == null) return ResponseEntity.notFound().build();
+        
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(respuesta.getSolicitudId());
+        if (solicitud == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud asociada a la respuesta no encontrada.");
+        }
+
+        if (solicitud.isCalificada()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La solicitud ya ha sido calificada.");
+        }
+        
+        if (!"admin".equals(respuesta.getAutor().getTipo()) || respuesta.getRespuestaPadre() != null) {
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solo se puede calificar la respuesta inicial del administrador.");
+        }
 
         respuesta.setPuntuacion(puntuacion);
-        return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.OK);
+        respuestaService.guardarRespuesta(respuesta); 
+
+        solicitud.setCalificada(true);
+        solicitud.setFechaActualizacion(LocalDateTime.now());
+        solicitudService.guardarSolicitudCompleta(solicitud); 
+
+        return new ResponseEntity<>("Respuesta calificada exitosamente.", HttpStatus.OK);
     }
 
-    @PostMapping("/reabrir/{idSolicitud}")
+ @PostMapping("/reabrir/{idSolicitud}")
     public ResponseEntity<?> reabrirSolicitud(@PathVariable ObjectId idSolicitud,
-                                              @RequestParam String comentario,
-                                              @RequestParam String usuario,
-                                              @RequestParam String contrasena,
-                                              @RequestParam ObjectId idRespuestaPadre) {
+                                            @RequestParam String comentario,
+                                            @RequestParam String usuario,
+                                            @RequestParam String contrasena) {
+
         UsuarioModel user = usuarioService.buscarPorUsuario(usuario);
         if (user == null || !contrasena.equals(user.getContrasena()) || "Anónimo".equals(user.getNombreCompleto())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo usuarios registrados pueden reabrir.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo usuarios registrados pueden reabrir solicitudes.");
         }
 
         SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
-        RespuestaModel respuestaPadre = respuestaService.buscarRespuestaPorId(idRespuestaPadre);
-        if (solicitud == null || respuestaPadre == null) return ResponseEntity.notFound().build();
+        if (solicitud == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud no encontrada.");
+
+        // Buscar la primera respuesta del admin (sin respuesta padre) para esta solicitud
+        RespuestaModel respuestaPadre = respuestaService
+            .buscarPrimerRespuestaAdminPorSolicitudId(idSolicitud); // <- este método debes implementarlo
+
+        if (respuestaPadre == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró una respuesta inicial del administrador.");
+        }
+
+        if (solicitud.isReabierta()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La solicitud ya ha sido reabierta anteriormente.");
+        }
 
         RespuestaModel replica = new RespuestaModel();
         replica.setSolicitudId(solicitud.getId());
         replica.setComentario(comentario);
         replica.setFechaRespuesta(new Date());
-        replica.setRespuestaPadre(new ObjectId());
+        replica.setRespuestaPadre(respuestaPadre.getId());
         replica.setAutor(new RespuestaModel.Autor("usuario", user.getId()));
 
-        solicitud.setEstado(EstadoSolicitud.Reabierta);
-        solicitud.setFechaActualizacion(LocalDateTime.now());
-        solicitudService.actualizarSolicitud(idSolicitud, solicitud);
+        RespuestaModel guardada = respuestaService.guardarRespuesta(replica);
 
-        return new ResponseEntity<>(respuestaService.guardarRespuesta(replica), HttpStatus.CREATED);
+        solicitudService.cambiarEstadoSolicitud(idSolicitud, EstadoSolicitud.Reabierta, true);
+
+        return new ResponseEntity<>(guardada, HttpStatus.CREATED);
     }
 
     @PostMapping("/responder-replica/{idSolicitud}")
     public ResponseEntity<?> responderAReplica(@PathVariable ObjectId idSolicitud,
-                                               @RequestParam ObjectId idRespuestaPadre,
-                                               @RequestParam String comentario,
-                                               @RequestParam String usuario,
-                                               @RequestParam String contrasena) {
+                                            @RequestParam String comentario,
+                                            @RequestParam String usuario,
+                                            @RequestParam String contrasena) {
 
         AdminModel admin = adminService.buscarPorUsuario(usuario);
         if (admin == null || !contrasena.equals(admin.getContrasena())) {
@@ -147,10 +182,19 @@ public class RespuestaControlador {
         }
 
         SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
-        RespuestaModel respuestaPadre = respuestaService.buscarRespuestaPorId(idRespuestaPadre);
+        if (solicitud == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud no encontrada.");
 
-        if (solicitud == null || respuestaPadre == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud o respuesta padre no encontrada.");
+        RespuestaModel respuestaPadre = respuestaService.buscarUltimaReplicaUsuarioPorSolicitudId(idSolicitud);
+        if (respuestaPadre == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró una réplica del usuario para responder.");
+        }
+
+        if (!"usuario".equals(respuestaPadre.getAutor().getTipo()) || respuestaPadre.getRespuestaPadre() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La respuesta objetivo no es una réplica válida.");
+        }
+
+        if (solicitud.isReplicaRespondida()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("La réplica ya fue respondida por un administrador.");
         }
 
         RespuestaModel respuesta = new RespuestaModel();
@@ -158,13 +202,26 @@ public class RespuestaControlador {
         respuesta.setComentario(comentario);
         respuesta.setFechaRespuesta(new Date());
         respuesta.setAutor(new RespuestaModel.Autor("admin", admin.getId()));
-        respuesta.setRespuestaPadre(new ObjectId());
+        respuesta.setRespuestaPadre(respuestaPadre.getId());
 
-        solicitud.setEstado(EstadoSolicitud.Resuelta);
+        RespuestaModel guardada = respuestaService.guardarRespuesta(respuesta);
+
+        solicitud.setReplicaRespondida(true);
         solicitud.setFechaActualizacion(LocalDateTime.now());
-        solicitudService.actualizarSolicitud(idSolicitud, solicitud);
 
-        return new ResponseEntity<>(respuestaService.guardarRespuesta(respuesta), HttpStatus.CREATED);
+        SolicitudesModel.RespuestaResumen resumen = new SolicitudesModel.RespuestaResumen();
+        resumen.setRespuestaId(guardada.getId());
+        resumen.setComentario(guardada.getComentario());
+        resumen.setFechaRespuesta(guardada.getFechaRespuesta());
+
+        if (solicitud.getRespuestas() == null) {
+            solicitud.setRespuestas(new ArrayList<>());
+        }
+        solicitud.getRespuestas().add(resumen);
+
+        solicitudService.guardarSolicitudCompleta(solicitud);
+
+        return new ResponseEntity<>(guardada, HttpStatus.CREATED);
     }
 
     @PutMapping("/cerrar-definitivo/{idSolicitud}")
@@ -203,10 +260,10 @@ public class RespuestaControlador {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas.");
         }
 
-        ObjectId idAdmin = new ObjectId(usuarioAutenticado.getUsuario());
-        AdminModel admin = adminService.buscarAdminPorId(idAdmin);
+
+        AdminModel admin = adminService.buscarPorUsuario(usuario); 
         if (admin == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo el administrador puede actualizar.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Solo el administrador puede actualizar respuestas.");
         }
 
         RespuestaModel existente = respuestaService.buscarRespuestaPorId(id);
@@ -216,30 +273,67 @@ public class RespuestaControlador {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes modificar una respuesta de otro administrador.");
         }
 
+        SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(existente.getSolicitudId());
+        if (solicitud == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitud asociada a la respuesta no encontrada.");
+        }
+
+        if (solicitud.isCalificada()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede actualizar una respuesta de una solicitud que ya ha sido calificada.");
+        }
+        
         List<RespuestaModel> posiblesReplicas = respuestaService.listarRespuestasPorSolicitud(existente.getSolicitudId());
         boolean tieneReplica = posiblesReplicas.stream().anyMatch(r ->
             r.getRespuestaPadre() != null && r.getRespuestaPadre().equals(existente.getId())
         );
         if (tieneReplica) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede actualizar una respuesta que ya fue replicada por un usuario.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede actualizar esta respuesta porque ya fue replicada por un usuario.");
         }
-
-        existente.setComentario(nuevaRespuesta.getComentario());
-        existente.setRutaArchivoPDF(nuevaRespuesta.getRutaArchivoPDF());
         return new ResponseEntity<>(respuestaService.guardarRespuesta(existente), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarRespuesta(@PathVariable ObjectId id) {
         try {
+            RespuestaModel respuestaAEliminar = respuestaService.buscarRespuestaPorId(id);
+            if (respuestaAEliminar == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Respuesta no encontrada.");
+            }
+
+            List<RespuestaModel> respuestasDeSolicitud = respuestaService.listarRespuestasPorSolicitud(respuestaAEliminar.getSolicitudId());
+            boolean tieneReplicas = respuestasDeSolicitud.stream().anyMatch(r ->
+                r.getRespuestaPadre() != null && r.getRespuestaPadre().equals(respuestaAEliminar.getId())
+            );
+
+            if (tieneReplicas) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede eliminar esta respuesta porque tiene réplicas asociadas.");
+            }
+
+            SolicitudesModel solicitud = solicitudService.buscarSolicitudPorId(respuestaAEliminar.getSolicitudId());
+            if (solicitud != null) {
+
+                if ("admin".equals(respuestaAEliminar.getAutor().getTipo()) && respuestaAEliminar.getRespuestaPadre() == null) {
+                    solicitud.setRespuestaEnviada(false);
+                    solicitud.setCalificada(false); 
+                    solicitud.setReabierta(false); 
+                    solicitud.setReplicaRespondida(false);
+                    solicitud.setEstado(EstadoSolicitud.EnProceso); 
+                    solicitud.setFechaActualizacion(LocalDateTime.now());
+
+                    solicitud.getRespuestas().removeIf(r -> r.getRespuestaId().equals(id));
+                    
+                    solicitudService.guardarSolicitudCompleta(solicitud);
+                }
+            }
+
             respuestaService.eliminarRespuesta(id);
             return ResponseEntity.ok("Respuesta eliminada exitosamente.");
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("No se puede eliminar la respuesta porque tiene réplicas asociadas.");
+                    .body("No se puede eliminar la respuesta porque tiene réplicas asociadas (error de integridad de datos).");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ocurrió un error al intentar eliminar la respuesta.");
+                    .body("Ocurrió un error al intentar eliminar la respuesta: " + e.getMessage());
         }
     }
 }

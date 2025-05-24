@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.bson.types.ObjectId;
@@ -32,6 +33,18 @@ public class SolicitudesModel {
     private ObjectId usuarioId;
     private List<RespuestaResumen> Respuestas;
     private List<EvidenciaEmbed> evidencias;
+
+    @JsonIgnore
+    private boolean respuestaEnviada;
+
+    @JsonIgnore
+    private boolean calificada;
+
+    @JsonIgnore
+    private boolean reabierta;
+
+    @JsonIgnore
+    private boolean replicaRespondida;
 
     @JsonProperty("id")
     public String getIdString() {

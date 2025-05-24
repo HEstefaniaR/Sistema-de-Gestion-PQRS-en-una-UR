@@ -17,4 +17,6 @@ public interface IRespuestaService {
     String eliminarRespuesta(ObjectId id);
 
     List<RespuestaModel> listarRespuestasPorSolicitud(ObjectId solicitudId);
+    RespuestaModel buscarPrimerRespuestaAdminPorSolicitudId(ObjectId idSolicitud);
+    RespuestaModel buscarUltimaReplicaUsuarioPorSolicitudId(ObjectId solicitudId);
 }

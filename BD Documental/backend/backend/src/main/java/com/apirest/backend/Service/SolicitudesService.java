@@ -128,4 +128,19 @@ public class SolicitudesService implements ISolicitudesService {
             default -> TipoArchivo.documento;
         };
     }
+    @Override
+    public SolicitudesModel guardarSolicitudCompleta(SolicitudesModel solicitud) {
+        return solicitudesRepository.save(solicitud);
+    }   
+
+@Override
+public void cambiarEstadoSolicitud(ObjectId idSolicitud, EstadoSolicitud nuevoEstado, boolean reabierta) {
+    SolicitudesModel solicitud = solicitudesRepository.findById(idSolicitud).orElse(null);
+    if (solicitud != null) {
+        solicitud.setEstado(nuevoEstado);
+        solicitud.setFechaActualizacion(LocalDateTime.now());
+        solicitud.setReabierta(reabierta);
+        solicitudesRepository.save(solicitud);
+    }
+}
 }
