@@ -29,10 +29,12 @@ public class UsuarioModel {
     private String telefono;
     private DireccionUsuario direccion; 
     private RolUsuario rol;
-    private List<SolicitudesModel> solicitudes = new ArrayList<>();
+    private List<SolicitudResumen> solicitudes = new ArrayList<>();
     
     @JsonProperty("id")
     public String getIdString() {
         return id != null ? id.toHexString() : null;
     }
+
+
 }

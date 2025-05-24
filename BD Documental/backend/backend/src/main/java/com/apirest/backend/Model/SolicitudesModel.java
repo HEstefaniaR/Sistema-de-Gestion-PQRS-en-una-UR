@@ -62,7 +62,7 @@ public class SolicitudesModel {
     @AllArgsConstructor
     public static class EvidenciaEmbed {
         @Field("evidenciaId")
-        private ObjectId idEvidencia;
+        private ObjectId evidenciaId;
         private TipoArchivo tipoArchivo;
         private String rutaArchivo;
         private String descripcion;
@@ -71,7 +71,7 @@ public class SolicitudesModel {
 
         @JsonProperty("evidenciaId")
         public String getIdEvidenciaString() {
-            return idEvidencia != null ? idEvidencia.toHexString() : null;
+            return evidenciaId != null ? evidenciaId.toHexString() : null;
         }
     }
 

@@ -67,7 +67,7 @@ public class SolicitudesService implements ISolicitudesService {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed nuevaEvidencia = new EvidenciaEmbed();
-        nuevaEvidencia.setIdEvidencia(new ObjectId()); 
+        nuevaEvidencia.setEvidenciaId(new ObjectId()); 
         nuevaEvidencia.setTipoArchivo(determinarTipoArchivo(archivo.getContentType()));
         nuevaEvidencia.setRutaArchivo(almacenamientoService.almacenarArchivo(archivo));
         nuevaEvidencia.setFechaHoraCarga(LocalDateTime.now());
@@ -85,7 +85,7 @@ public class SolicitudesService implements ISolicitudesService {
         SolicitudesModel solicitud = buscarSolicitudPorId(idSolicitud);
         
         EvidenciaEmbed evidencia = solicitud.getEvidencias().stream()
-            .filter(e -> e.getIdEvidencia().equals(new ObjectId(idEvidencia)))
+            .filter(e -> e.getEvidenciaId().equals(new ObjectId(idEvidencia)))
             .findFirst()
             .orElseThrow(() -> new RecursoNoEncontradoException("Evidencia no encontrada"));
             

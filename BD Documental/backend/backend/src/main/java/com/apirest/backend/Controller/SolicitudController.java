@@ -129,7 +129,7 @@ public class SolicitudController {
             String nombreArchivo = almacenamientoService.almacenarArchivo(archivo);
 
             SolicitudesModel.EvidenciaEmbed evidencia = new SolicitudesModel.EvidenciaEmbed();
-            evidencia.setIdEvidencia(new ObjectId());
+            evidencia.setEvidenciaId(new ObjectId());
             evidencia.setFechaHoraCarga(LocalDateTime.now());
             evidencia.setRutaArchivo(nombreArchivo);
             evidencia.setDescripcion(descripcion);

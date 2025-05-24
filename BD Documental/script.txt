@@ -112,7 +112,7 @@ db.createCollection("Solicitudes", {
                     }
                 }
             },
-            "additionalProperties": false,
+            "additionalProperties": true,
             "required": ["_id", "tipo", "categoria", "descripcion", "estado", "fechaHoraCreacion", "usuarioId"]
         }
     },
