@@ -99,3 +99,63 @@ db.getCollection('Usuarios').aggregate(
   ],
   { maxTimeMS: 60000, allowDiskUse: true }
 );
+
+3. Calificación promedio de respuesta por tipo de solicitud
+
+db.getCollection('Respuestas').aggregate(
+  [
+    {
+      $lookup: {
+        from: 'Solicitudes',
+        localField: 'solicitudId',
+        foreignField: '_id',
+        as: 'solicitud'
+      }
+    },
+    { $unwind: { path: '$solicitud' } },
+    {
+      $group: {
+        _id: '$solicitud.tipo',
+        promPuntuacion: { $avg: '$puntuacion' },
+        cantidadRespuestas: { $sum: 1 }
+      }
+    },
+    { $sort: { promPuntuacion: -1 } }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
+
+
+4. Usuarios que han subido evidencias
+
+db.getCollection('Solicitudes').aggregate(
+  [
+    { $match: { evidencias: { $exists: true } } },
+    {
+      $group: {
+        _id: '$usuarioId',
+        cantidadEvidencias: {
+          $sum: { $size: '$evidencias' }
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: 'Usuarios',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'usuario'
+      }
+    },
+    { $unwind: { path: '$usuario' } },
+    {
+      $project: {
+        _id: 0,
+        usuarioId: '$_id',
+        nombreUsuario: '$usuario.nombreCompleto',
+        cantidadEvidencias: 1
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
