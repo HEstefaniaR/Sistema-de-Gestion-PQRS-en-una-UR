@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "ab653eb0-e711-45f3-897c-6f925f1222d6",
+		"name": "Solicitudes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43254787",
+		"_collection_link": "https://almacenamientodatos.postman.co/workspace/AlmacenamientoDatos-Workspace~5ff46127-026c-44b9-90f8-0e2953c42391/collection/43254787-ab653eb0-e711-45f3-897c-6f925f1222d6?action=share&source=collection_link&creator=43254787"
+	},
+	"item": [
+		{
+			"name": "Insertar solicitud",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"Peticion\",\n    \"categoria\": \"Seguridad\",\n    \"descripcion\": \"Cierren la puerta bien\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/insertar?usuario=jlopez&contrasena=pass123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"insertar"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "jlopez"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar solicitudes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/listar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"listar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Solicitudes por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/buscarporid/683220f77bd6d079241891d2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"buscarporid",
+						"683220f77bd6d079241891d2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar solicitud",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tipo\": \"Peticion\",\n  \"categoria\": \"Seguridad\",\n  \"descripcion\": \"Actualización de prueba\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/actualizar/68313cd26a2a44701eedc6ad?usuario=jlopez&contrasena=pass123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"actualizar",
+						"68313cd26a2a44701eedc6ad"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "jlopez"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar estado",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"estado\": \"EnProceso\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/683220f77bd6d079241891d2/estado?usuario=admin1&contrasena=admin123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"683220f77bd6d079241891d2",
+						"estado"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "admin1"
+						},
+						{
+							"key": "contrasena",
+							"value": "admin123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Subir Evidencia",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "archivo",
+							"type": "file",
+							"src": "postman-cloud:///1f011c89-f678-4b60-9848-fe0cdfc1215d"
+						},
+						{
+							"key": "descripcion",
+							"value": "Test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/68313cd26a2a44701eedc6ad/evidencias?usuario=jlopez&contrasena=pass123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"68313cd26a2a44701eedc6ad",
+						"evidencias"
+					],
+					"query": [
+						{
+							"key": "usuario",
+							"value": "jlopez"
+						},
+						{
+							"key": "contrasena",
+							"value": "pass123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar evidencias Solicitud",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/solicitudes/682e6690ef52d26ca093fb96/evidencias",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"solicitudes",
+						"682e6690ef52d26ca093fb96",
+						"evidencias"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

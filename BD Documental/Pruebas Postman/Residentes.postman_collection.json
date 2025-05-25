@@ -1,0 +1,167 @@
+{
+	"info": {
+		"_postman_id": "fbdd9f08-65a2-4d8f-b409-69ac3c1cf337",
+		"name": "Residentes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43254787",
+		"_collection_link": "https://almacenamientodatos.postman.co/workspace/AlmacenamientoDatos-Workspace~5ff46127-026c-44b9-90f8-0e2953c42391/collection/43254787-fbdd9f08-65a2-4d8f-b409-69ac3c1cf337?action=share&source=collection_link&creator=43254787"
+	},
+	"item": [
+		{
+			"name": "Registrar residentes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"mgarcia\",\n  \"contrasena\": \"securePass456\",\n  \"nombreCompleto\": \"María García\",\n  \"tipoDocumento\": \"ce\",\n  \"numeroDocumento\": \"98765432\",\n  \"correo\": \"maria.garcia@example.com\",\n  \"telefono\": \"3001234567\",\n  \"direccion\": {\n    \"tipo\": \"casa\",\n    \"numero\": \"23B\"\n  },\n  \"rol\": \"inquilino\",\n  \"solicitudes\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/insertar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"insertar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar residentes anonimos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"alias2\",\n  \"rol\": \"anonimo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/insertar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"insertar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar residentes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/listar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"listar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar residente por Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/buscarporusuario/jlopez",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"buscarporusuario",
+						"jlopez"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Residente",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"pepitoP\",\n  \"nombreCompleto\": \"Pepito Perez\",\n  \"tipoDocumento\": \"CC\",\n  \"numeroDocumento\": \"123456789\",\n  \"correoElectronico\": \"juan@example.com\",\n  \"telefono\": \"3001234567\",\n  \"direccionInterna\": \"Apto 202\",\n  \"rol\": \"propietario\", \n  \"contrasena\": \"1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/actualizarporid/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"actualizarporid",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Residente",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/usuarios/eliminarporid/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"usuarios",
+						"eliminarporid",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

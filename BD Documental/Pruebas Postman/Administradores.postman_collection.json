@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "6f511968-f775-4268-8823-100fd372b7f8",
+		"name": "Administradores",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43254787",
+		"_collection_link": "https://almacenamientodatos.postman.co/workspace/AlmacenamientoDatos-Workspace~5ff46127-026c-44b9-90f8-0e2953c42391/collection/43254787-6f511968-f775-4268-8823-100fd372b7f8?action=share&source=collection_link&creator=43254787"
+	},
+	"item": [
+		{
+			"name": "Crear un administrador",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuario\": \"admin1\",\n  \"contrasena\": \"admin1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/UR/administradores/insertar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"administradores",
+						"insertar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar administradores",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/administradores/listar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"administradores",
+						"listar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar administrador por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/UR/administradores/buscarporid/682e6505e3fc0161e8ccff1c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"UR",
+						"administradores",
+						"buscarporid",
+						"682e6505e3fc0161e8ccff1c"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
