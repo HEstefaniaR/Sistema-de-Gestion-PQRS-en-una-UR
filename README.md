@@ -9,12 +9,23 @@ Integrantes:
 # Estructura del Repositorio
 
 El repositorio contiene las siguientes carpetas y archivos principales:
+
+*BD Relacional*
+Se utilizó una base de datos SQL. La estructura trabajada fue la siguiente. 
 - Pruebas Postman: Carpeta que incluye las colecciones de pruebas realizadas con Postman para verificar el correcto funcionamiento de la API REST desarrollada.
 - backend: Directorio principal del código fuente del backend de la aplicación, desarrollado en Java utilizando el framework Spring Boot.
 - uploads: Carpeta destinada al almacenamiento de archivos subidos a la aplicación, como evidencias asociadas a las solicitudes.
 - consultas.sql: Archivo SQL que contiene las consultas implementadas para interactuar con la base de datos del sistema.
 - data.sql: Script SQL utilizado para llenar la base de datos con datos iniciales necesarios para el funcionamiento del sistema.
 - script.sql: Archivo que incluye la estructura de la base de datos, así como los objetos almacenados en ella como triggers y procedimientos.
+*BD Relacional*
+Se utilizó una base de datos noSQL con MongoDB. La estructura trabajada fue la siguiente.
+- Pruebas Postman: Carpeta que incluye las colecciones de pruebas realizadas con Postman para verificar el correcto funcionamiento de la API REST desarrollada.
+- backend: Directorio principal del código fuente del backend de la aplicación, desarrollado en Java utilizando el framework Spring Boot.
+- agregaciones.txt: contiene diez agregaciones implementadas para consultar datos relevantes del sistema.
+- Data: contiene los datos de cada colección para interactuar con datos.
+- script.txt: contiene la estructura de la base de datos con validación moderada. 
+
 # Instrucciones para Ejecutar el Proyecto
 
 1.	Utilizar los archivos script.sql y data.sql para crear y llenar la base de datos.
