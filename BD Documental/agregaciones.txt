@@ -1,36 +1,50 @@
-1. Personas con mas de 2 solicitudes y una calificacion menor a 3
+1.   Promedio de puntuación de respuestas dadas por los admins
 
-db.getCollection('Respuestas').aggregate(
-  [
-    {
-      $lookup: {
-        from: 'Administradores',
-        localField: 'autor.autorId',
-        foreignField: '_id',
-        as: 'adminInfo'
-      }
-    },
-    { $match: { 'autor.tipo': 'admin' } },
-    {
-      $group: {
-        _id: '$autor.autorId',
-        totalRespuestas: { $sum: 1 }
-      }
-    },
-    { $sort: { totalRespuestas: -1 } },
-    { $limit: 1 },
-    {
-      $project: {
-        _id: 0,
-        totalRespuestas: 1,
-        usuarioAdmin: '$adminInfo.usuario'
-      }
+db.Respuestas.aggregate([
+  {
+    $match: {
+      "autor.tipo": "admin",
+      "puntuacion": { $exists: true, $ne: null }
     }
-  ],
+  },
+  {
+    $group: {
+      _id: "$solicitudId",
+      promedioPuntuacion: { $avg: "$puntuacion" },
+      totalRespuestas: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { promedioPuntuacion: -1 }
+  },
+  {
+    $limit: 5
+  },
+  {
+    $lookup: {
+      from: "Solicitudes",
+      localField: "_id",
+      foreignField: "_id",
+      as: "solicitud"
+    }
+  },
+  {
+    $unwind: "$solicitud"
+  },
+  {
+    $project: {
+      _id: 0,
+      solicitudId: "$_id",
+      descripcionSolicitud: "$solicitud.descripcion",
+      promedioPuntuacion: 1,
+      totalRespuestas: 1
+    }
+  }
+],
   { maxTimeMS: 60000, allowDiskUse: true }
 );
 
-2. Administrador que ha respondido más solicitudes
+2. Personas con mas de 2 solicitudes y una calificacion menor a 3
 
 db.getCollection('Usuarios').aggregate(
   [
@@ -160,36 +174,246 @@ db.getCollection('Solicitudes').aggregate(
   { maxTimeMS: 60000, allowDiskUse: true }
 );
 
-5. Promedio de calificación de respuestas por cada tipo de solicitud
+5. Tiempo promedio de respuesta de los admins (en horas) por tipo de solicitud
 
-db.getCollection('Respuestas').aggregate(
-  [
-    {
-      $lookup: {
-        from: 'Solicitudes',
-        localField: 'solicitudId',
-        foreignField: '_id',
-        as: 'solicitud'
-      }
-    },
-    { $unwind: { path: '$solicitud' } },
-    {
-      $group: {
-        _id: '$solicitud.tipo',
-        promedioPuntuacion: {
-          $avg: '$puntuacion'
-        },
-        totalRespuestas: { $sum: 1 }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        tipoSolicitud: '$_id',
-        promedioPuntuacion: 1,
-        totalRespuestas: 1
+db.Respuestas.aggregate([
+  {
+    $match: {
+      "autor.tipo": "admin"
+    }
+  },
+  {
+    $lookup: {
+      from: "Solicitudes",
+      localField: "solicitudId",
+      foreignField: "_id",
+      as: "solicitud"
+    }
+  },
+  { $unwind: "$solicitud" },
+  {
+    $project: {
+      tipoSolicitud: "$solicitud.tipo",
+      tiempoRespuestaHoras: {
+        $divide: [
+          { $subtract: ["$fechaRespuesta", "$solicitud.fechaHoraCreacion"] },
+          1000 * 60 * 60 // milisegundos a horas
+        ]
       }
     }
-  ],
+  },
+  {
+    $group: {
+      _id: "$tipoSolicitud",
+      tiempoPromedioHoras: { $avg: "$tiempoRespuestaHoras" },
+      totalRespuestas: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      tipoSolicitud: "$_id",
+      tiempoPromedioHoras: { $round: ["$tiempoPromedioHoras", 2] },
+      totalRespuestas: 1
+    }
+  },
+  { $sort: { tiempoPromedioHoras: 1 } }
+],
   { maxTimeMS: 60000, allowDiskUse: true }
 );
+
+6. Residente con mayor cantidad de reclamos
+
+db.Solicitudes.aggregate([
+  {
+    $match: {
+      tipo: "Reclamo"
+    }
+  },
+  {
+    $lookup: {
+      from: "Usuarios",
+      localField: "usuarioId",
+      foreignField: "_id",
+      as: "usuario"
+    }
+  },
+  {
+    $unwind: "$usuario"
+  },
+  {
+    $group: {
+      _id: {
+        idusuario: "$usuario._id",
+        nombre_completo: "$usuario.nombreCompleto"
+      },
+      total_reclamos: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      cliente: "$_id.nombre_completo",
+      total_reclamos: 1
+    }
+  },
+  {
+    $sort: {
+      total_reclamos: -1
+    }
+  }
+],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
+
+7. Promedio general de calificaciones y promedio de respuestas por solicitud
+
+db.Respuestas.aggregate([
+  {
+    $facet: {
+      // Promedio general de calificaciones
+      promedio_calificaciones: [
+        {
+          $group: {
+            _id: null,
+            promedio: { $avg: "$puntuacion" }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            promedio: { $round: ["$promedio", 2] }
+          }
+        }
+      ],
+      // Promedio de respuestas por solicitud
+      promedio_respuestas: [
+        {
+          $group: {
+            _id: "$solicitudId",
+            conteo: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            promedio: { $avg: "$conteo" }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            promedio: { $round: ["$promedio", 2] }
+          }
+        }
+      ]
+    }
+  },
+  {
+    $project: {
+      promedio_general_calificaciones: {
+        $arrayElemAt: ["$promedio_calificaciones.promedio", 0]
+      },
+      promedio_respuestas_por_solicitud: {
+        $arrayElemAt: ["$promedio_respuestas.promedio", 0]
+      }
+    }
+  }
+],
+{
+  maxTimeMS: 60000, allowDiskUse: true
+});
+
+8. 3 respuestas mejor calificadas de acuerdo a la fecha
+
+db.Respuestas.aggregate([
+  {
+    $match: {
+      fechaRespuesta: { $lte: new Date("2025-05-25T06:43:59Z") }
+    }
+  },
+  {
+    $sort: { puntuacion: -1 }
+  },
+  {
+    $limit: 3
+  },
+  {
+    $group: {
+      _id: null,
+      topRatedResponses: { $push: "$$ROOT" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      topRatedResponses: 1
+    }
+  }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+});
+
+9. resumen de respuestas por solicitud
+
+db.Respuestas.aggregate([
+  {
+    $group: {
+      _id: "$solicitudId",
+      totalRespuestas: { $sum: 1 },
+      promedioPuntuacion: { $avg: "$puntuacion" },
+      autoresUnicos: { $addToSet: "$autor.autorId" }
+    }
+  },
+  {
+    $project: {
+      solicitudId: "$_id",
+      totalRespuestas: 1,
+      promedioPuntuacion: 1,
+      totalAutoresUnicos: { $size: "$autoresUnicos" }
+    }
+  }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+});
+
+10. Solicitudes de categoria "Seguridad" que no se han cerrado
+
+db.Solicitudes.aggregate([
+  {
+    $match: {
+      categoria: "Seguridad",
+      estado: { $ne: "Cerrada" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      solicitudId: "$_id",
+      descripcion: 1,
+      estado: 1,
+      fechaHoraCreacion: 1
+    }
+  },
+  {
+    $sort: { fechaHoraCreacion: -1 }
+  },
+  {
+    $project: {
+      solicitudId: 1,
+      descripcion: 1,
+      estado: 1,
+      fecha: {
+        $dateToString: { format: "%Y-%m-%d %H:%M", date: "$fechaHoraCreacion" }
+      }
+    }
+  }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+});
