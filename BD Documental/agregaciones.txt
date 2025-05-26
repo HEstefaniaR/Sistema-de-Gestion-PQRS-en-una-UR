@@ -310,5 +310,63 @@ db.Respuestas.aggregate([
       promedio_general_calificaciones: { $arrayElemAt: ["$promedio_calificaciones.promedio", 0] },
       promedio_respuestas_por_solicitud: { $arrayElemAt: ["$promedio_respuestas.promedio", 0] }
     }
+  },
+
+8. 3 respuestas mejor calificadas de acuerdo a la fecha
+
+db.Respuestas.aggregate([
+  {
+    $match: {
+      fechaRespuesta: { $lte: new Date("2025-05-25T06:43:59Z") }
+    }
+  },
+  {
+    $sort: { puntuacion: -1 }
+  },
+  {
+    $limit: 3
+  },
+  {
+    $group: {
+      _id: null,
+      topRatedResponses: { $push: "$$ROOT" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      topRatedResponses: 1
+    }
   }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+ }
+});
+
+9. resumen de respuestas por solicitud
+
+db.Respuestas.aggregate([
+  {
+    $group: {
+      _id: "$solicitudId",
+      totalRespuestas: { $sum: 1 },
+      promedioPuntuacion: { $avg: "$puntuacion" },
+      autoresUnicos: { $addToSet: "$autor.autorId" }
+    }
+  },
+  {
+    $project: {
+      solicitudId: "$_id",
+      totalRespuestas: 1,
+      promedioPuntuacion: 1,
+      totalAutoresUnicos: { $size: "$autoresUnicos" }
+    }
+  }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+});
 ])
