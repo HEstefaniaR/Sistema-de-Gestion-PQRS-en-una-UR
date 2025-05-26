@@ -218,21 +218,23 @@ db.Respuestas.aggregate([
     }
   },
   { $sort: { tiempoPromedioHoras: 1 } }
-]);
+],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
 
 6. Residente con mayor cantidad de reclamos
 
-db.Resultadas.aggregate([
+db.Solicitudes.aggregate([
   {
     $match: {
-      tipo: "reclamo"
+      tipo: "Reclamo"
     }
   },
   {
     $lookup: {
       from: "Usuarios",
       localField: "usuarioId",
-      foreignField: "id",
+      foreignField: "_id",
       as: "usuario"
     }
   },
@@ -242,8 +244,8 @@ db.Resultadas.aggregate([
   {
     $group: {
       _id: {
-        idusuario: "$usuario.id",
-        nombre_completo: "$usuario.nombreComplete" // Nota el campo es nombreComplete en tu esquema
+        idusuario: "$usuario._id",
+        nombre_completo: "$usuario.nombreCompleto"
       },
       total_reclamos: { $sum: 1 }
     }
@@ -260,14 +262,16 @@ db.Resultadas.aggregate([
       total_reclamos: -1
     }
   }
-])
+],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
 
 7. Promedio general de calificaciones y promedio de respuestas por solicitud
 
 db.Respuestas.aggregate([
   {
     $facet: {
-      // Primer cálculo: promedio general de calificaciones
+      // Promedio general de calificaciones
       promedio_calificaciones: [
         {
           $group: {
@@ -282,11 +286,11 @@ db.Respuestas.aggregate([
           }
         }
       ],
-      // Segundo cálculo: promedio de respuestas por solicitud
+      // Promedio de respuestas por solicitud
       promedio_respuestas: [
         {
           $group: {
-            _id: "$solicitudid",
+            _id: "$solicitudId",
             conteo: { $sum: 1 }
           }
         },
@@ -307,10 +311,18 @@ db.Respuestas.aggregate([
   },
   {
     $project: {
-      promedio_general_calificaciones: { $arrayElemAt: ["$promedio_calificaciones.promedio", 0] },
-      promedio_respuestas_por_solicitud: { $arrayElemAt: ["$promedio_respuestas.promedio", 0] }
+      promedio_general_calificaciones: {
+        $arrayElemAt: ["$promedio_calificaciones.promedio", 0]
+      },
+      promedio_respuestas_por_solicitud: {
+        $arrayElemAt: ["$promedio_respuestas.promedio", 0]
+      }
     }
-  },
+  }
+],
+{
+  maxTimeMS: 60000, allowDiskUse: true
+});
 
 8. 3 respuestas mejor calificadas de acuerdo a la fecha
 
@@ -341,8 +353,7 @@ db.Respuestas.aggregate([
 ],
 {
   maxTimeMS: 60000,
-  allowDiskUse: true
- }
+  allowDiskUse: true
 });
 
 9. resumen de respuestas por solicitud
@@ -369,4 +380,3 @@ db.Respuestas.aggregate([
   maxTimeMS: 60000,
   allowDiskUse: true
 });
-])
