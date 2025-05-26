@@ -219,3 +219,96 @@ db.Respuestas.aggregate([
   },
   { $sort: { tiempoPromedioHoras: 1 } }
 ]);
+
+6. Residente con mayor cantidad de reclamos
+
+db.Resultadas.aggregate([
+  {
+    $match: {
+      tipo: "reclamo"
+    }
+  },
+  {
+    $lookup: {
+      from: "Usuarios",
+      localField: "usuarioId",
+      foreignField: "id",
+      as: "usuario"
+    }
+  },
+  {
+    $unwind: "$usuario"
+  },
+  {
+    $group: {
+      _id: {
+        idusuario: "$usuario.id",
+        nombre_completo: "$usuario.nombreComplete" // Nota el campo es nombreComplete en tu esquema
+      },
+      total_reclamos: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      cliente: "$_id.nombre_completo",
+      total_reclamos: 1
+    }
+  },
+  {
+    $sort: {
+      total_reclamos: -1
+    }
+  }
+])
+
+7. Promedio general de calificaciones y promedio de respuestas por solicitud
+
+db.Respuestas.aggregate([
+  {
+    $facet: {
+      // Primer cálculo: promedio general de calificaciones
+      promedio_calificaciones: [
+        {
+          $group: {
+            _id: null,
+            promedio: { $avg: "$puntuacion" }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            promedio: { $round: ["$promedio", 2] }
+          }
+        }
+      ],
+      // Segundo cálculo: promedio de respuestas por solicitud
+      promedio_respuestas: [
+        {
+          $group: {
+            _id: "$solicitudid",
+            conteo: { $sum: 1 }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            promedio: { $avg: "$conteo" }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            promedio: { $round: ["$promedio", 2] }
+          }
+        }
+      ]
+    }
+  },
+  {
+    $project: {
+      promedio_general_calificaciones: { $arrayElemAt: ["$promedio_calificaciones.promedio", 0] },
+      promedio_respuestas_por_solicitud: { $arrayElemAt: ["$promedio_respuestas.promedio", 0] }
+    }
+  }
+])
