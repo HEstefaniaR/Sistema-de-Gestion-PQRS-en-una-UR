@@ -380,3 +380,40 @@ db.Respuestas.aggregate([
   maxTimeMS: 60000,
   allowDiskUse: true
 });
+
+10. Solicitudes de categoria "Seguridad" que no se han cerrado
+
+db.Solicitudes.aggregate([
+  {
+    $match: {
+      categoria: "Seguridad",
+      estado: { $ne: "Cerrada" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      solicitudId: "$_id",
+      descripcion: 1,
+      estado: 1,
+      fechaHoraCreacion: 1
+    }
+  },
+  {
+    $sort: { fechaHoraCreacion: -1 }
+  },
+  {
+    $project: {
+      solicitudId: 1,
+      descripcion: 1,
+      estado: 1,
+      fecha: {
+        $dateToString: { format: "%Y-%m-%d %H:%M", date: "$fechaHoraCreacion" }
+      }
+    }
+  }
+],
+{
+  maxTimeMS: 60000,
+  allowDiskUse: true
+});
