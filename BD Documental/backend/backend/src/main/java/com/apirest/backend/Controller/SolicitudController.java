@@ -208,4 +208,18 @@ public class SolicitudController {
         solicitudesService.guardarSolicitud(solicitud);
         return ResponseEntity.ok("Estado actualizado correctamente.");
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarSolicitud(@PathVariable("id") String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            boolean eliminada = solicitudesService.eliminarSolicitud(objectId);
+            if (eliminada) {
+                return ResponseEntity.ok("Solicitud eliminada correctamente.");
+            } else {
+                return ResponseEntity.badRequest().body("No se puede eliminar: la solicitud no está en estado 'RADICADA' o ya tiene respuestas.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("ID inválido.");
+        }
+    }
 }

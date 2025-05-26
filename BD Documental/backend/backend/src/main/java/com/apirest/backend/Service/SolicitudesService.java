@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.types.ObjectId;
 
@@ -144,4 +145,22 @@ public void cambiarEstadoSolicitud(ObjectId idSolicitud, EstadoSolicitud nuevoEs
         solicitudesRepository.save(solicitud);
     }
 }
+
+public boolean eliminarSolicitud(ObjectId solicitudId) {
+        Optional<SolicitudesModel> solicitudOpt = solicitudesRepository.findById(solicitudId);
+
+        if (solicitudOpt.isEmpty()) {
+            return false;
+        }
+
+        SolicitudesModel solicitud = solicitudOpt.get();
+
+        if (solicitud.getEstado() == EstadoSolicitud.Radicada &&
+            (solicitud.getRespuestas() == null || solicitud.getRespuestas().isEmpty())) {
+            solicitudesRepository.deleteById(solicitudId);
+            return true;
+        }
+
+        return false;
+    }
 }

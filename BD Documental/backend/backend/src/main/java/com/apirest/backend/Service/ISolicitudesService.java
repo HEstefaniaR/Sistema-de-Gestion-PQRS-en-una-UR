@@ -20,4 +20,5 @@ public interface ISolicitudesService {
     List<SolicitudesModel.SolicitudResumen> listarResumenesPorUsuarioId(ObjectId usuarioId);
     SolicitudesModel guardarSolicitudCompleta(SolicitudesModel solicitud);
     void cambiarEstadoSolicitud(ObjectId idSolicitud, EstadoSolicitud nuevoEstado, boolean reabierta);
+    boolean eliminarSolicitud(ObjectId objectId);
 }
