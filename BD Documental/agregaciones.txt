@@ -159,3 +159,37 @@ db.getCollection('Solicitudes').aggregate(
   ],
   { maxTimeMS: 60000, allowDiskUse: true }
 );
+
+5. Promedio de calificación de respuestas por cada tipo de solicitud
+
+db.getCollection('Respuestas').aggregate(
+  [
+    {
+      $lookup: {
+        from: 'Solicitudes',
+        localField: 'solicitudId',
+        foreignField: '_id',
+        as: 'solicitud'
+      }
+    },
+    { $unwind: { path: '$solicitud' } },
+    {
+      $group: {
+        _id: '$solicitud.tipo',
+        promedioPuntuacion: {
+          $avg: '$puntuacion'
+        },
+        totalRespuestas: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        tipoSolicitud: '$_id',
+        promedioPuntuacion: 1,
+        totalRespuestas: 1
+      }
+    }
+  ],
+  { maxTimeMS: 60000, allowDiskUse: true }
+);
